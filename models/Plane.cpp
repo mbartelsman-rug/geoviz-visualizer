@@ -33,10 +33,10 @@ void Plane::init(QOpenGLFunctions_4_1_Core *gl) {
 
 void Plane::update(QOpenGLFunctions_4_1_Core * gl) {
     QList<QVector3D> vertices = {
-        { -0.5, -0.5, 0 },
-        { +0.5, -0.5, 0 },
-        { +0.5, +0.5, 0 },
-        { -0.5, +0.5, 0 },
+        { -0.5, 0, -0.5 },
+        { +0.5, 0, -0.5 },
+        { +0.5, 0, +0.5 },
+        { -0.5, 0, +0.5 },
     };
     QList<QVector3D> normals = {
         { 0, 1, 0 },
@@ -57,11 +57,11 @@ void Plane::update(QOpenGLFunctions_4_1_Core * gl) {
     gl->glVertexAttribPointer(positionAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), (void *)0);
     gl->glEnableVertexAttribArray(positionAttribute);
 
-    // gl->glBindBuffer(GL_ARRAY_BUFFER, m_normals);
-    // gl->glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(QVector3D), normals.data(), GL_STATIC_DRAW);
-    // int normalsAttribute = gl->glGetAttribLocation(material()->program()->programId(), "vertexNormal_in");
-    // gl->glVertexAttribPointer(normalsAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), (void *)0);
-    // gl->glEnableVertexAttribArray(normalsAttribute);
+    gl->glBindBuffer(GL_ARRAY_BUFFER, m_normals);
+    gl->glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(QVector3D), normals.data(), GL_STATIC_DRAW);
+    int normalsAttribute = gl->glGetAttribLocation(material()->program()->programId(), "vertexNormal_in");
+    gl->glVertexAttribPointer(normalsAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), (void *)0);
+    gl->glEnableVertexAttribArray(normalsAttribute);
 
     gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices);
     gl->glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
@@ -70,13 +70,13 @@ void Plane::update(QOpenGLFunctions_4_1_Core * gl) {
 }
 
 void Plane::render(QOpenGLFunctions_4_1_Core * gl) {
-    glPointSize(50);
+    gl->glPointSize(50);
 
     GLuint id = material()->program()->programId();
     gl->glUseProgram(id);
     gl->glBindVertexArray(m_vao);
     gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices);
-    gl->glDrawElements(GL_POINTS, 6, GL_UNSIGNED_INT, nullptr);
+    gl->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     gl->glBindVertexArray(0);
     gl->glUseProgram(0);
 }

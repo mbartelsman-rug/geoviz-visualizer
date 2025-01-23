@@ -7,8 +7,9 @@
 class Camera {
     float m_aspectRatio { 16.0 / 9.0 };
     float m_fov { 40 };
+    float m_scale { 1 };
     float m_rollAngle { 0 };
-    QVector3D m_eye { 10, 10, 10 };
+    QVector3D m_eye { 5, 5, 5 };
     QVector3D m_target { 0, 0, 0 };
     QVector3D m_referenceUp { 0, 1, 0 };
 
@@ -17,6 +18,7 @@ public:
 
     virtual float aspectRatio();
     virtual float fov();
+    virtual float scale();
     virtual float rollAngle();
     virtual QVector3D eye();
     virtual QVector3D target();
@@ -24,6 +26,7 @@ public:
 
     virtual void aspectRatio(float value);
     virtual void fov(float value);
+    virtual void scale(float value);
     virtual void rollAngle(float value);
     virtual void eye(QVector3D value);
     virtual void target(QVector3D value);
@@ -36,8 +39,8 @@ public:
     virtual void displace(float truck, float boom, float dolly);
     virtual void track(float truck, float boom, float dolly);
 
-    virtual void rotate(float yaw, float pitch, float roll);
     virtual void orbit(float yaw, float pitch, float roll);
+    virtual void rotate(float yaw, float pitch, float roll);
 
     virtual void zoom(float factor);
 

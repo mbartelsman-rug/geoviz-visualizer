@@ -33,9 +33,9 @@ void Phong::update(QOpenGLFunctions_4_1_Core * gl) {
 void Phong::update(QOpenGLFunctions_4_1_Core * gl, Camera &camera) {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
-    gl->glUniformMatrix4fv(gl->glGetUniformLocation(id, "viewMatrix"), 1, true, camera.viewMatrix().data());
-    gl->glUniformMatrix3fv(gl->glGetUniformLocation(id, "viewNormalMatrix"), 1, true, camera.viewMatrix().normalMatrix().data());
-    gl->glUniformMatrix4fv(gl->glGetUniformLocation(id, "projectionMatrix"), 1, true, camera.projectionMatrix(0.1, 1000.0).data());
+    gl->glUniformMatrix4fv(gl->glGetUniformLocation(id, "viewMatrix"), 1, false, camera.viewMatrix().data());
+    gl->glUniformMatrix3fv(gl->glGetUniformLocation(id, "viewNormalMatrix"), 1, false, camera.viewMatrix().normalMatrix().data());
+    gl->glUniformMatrix4fv(gl->glGetUniformLocation(id, "projectionMatrix"), 1, false, camera.projectionMatrix(0.1f, 40.0f).data());
     gl->glUseProgram(0);
 }
 

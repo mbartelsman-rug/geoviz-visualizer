@@ -9,6 +9,13 @@ float Camera::fov() {
     return m_fov;
 }
 
+
+float Camera::scale()
+{
+    return m_scale;
+}
+
+
 QVector3D Camera::eye() {
     return m_eye;
 }
@@ -33,6 +40,13 @@ void Camera::fov(float value) {
     m_fov = value;
 }
 
+
+void Camera::scale(float value)
+{
+    m_scale = value;
+}
+
+
 void Camera::eye(QVector3D value) {
     m_eye = value;
 }
@@ -50,7 +64,7 @@ void Camera::referenceUp(QVector3D value) {
 }
 
 QVector3D Camera::eyeForward() {
-    return (target() - eye()).normalized();
+    return (eye() - target()).normalized();
 }
 
 QVector3D Camera::eyeUp() {
@@ -79,17 +93,24 @@ void Camera::track(float truck, float boom, float dolly) {
     target(target() + dirX * truck + dirY * boom + dirZ * dolly);
 }
 
-void Camera::rotate(float yaw, float pitch, float roll) {
-    QQuaternion yawRotation = QQuaternion::fromAxisAndAngle(eyeUp(), yaw);
+void Camera::orbit(float yaw, float pitch, float roll) {
+    QQuaternion yawRotation = QQuaternion::fromAxisAndAngle(referenceUp(), yaw);
     eye(yawRotation.rotatedVector(eye() - target()) + target());
 
-    QQuaternion pitchRotation = QQuaternion::fromAxisAndAngle(eyeRight(), pitch);
-    eye(pitchRotation.rotatedVector(eye() - target()) + target());
+    const float RAD2DEG = 180.0f / acosf(-1.0f);
+    float angle2Down = RAD2DEG * qAcos(QVector3D::dotProduct(-referenceUp(), eyeForward()));
+    float angle2Up = RAD2DEG * qAcos(QVector3D::dotProduct(referenceUp(), eyeForward()));
+
+    if (-pitch < angle2Down - 1 && pitch < angle2Up - 1)
+    {
+        QQuaternion pitchRotation = QQuaternion::fromAxisAndAngle(eyeRight(), pitch);
+        eye(pitchRotation.rotatedVector(eye() - target()) + target());
+    }
 
     rollAngle(rollAngle() + roll);
 }
 
-void Camera::orbit(float yaw, float pitch, float roll) {
+void Camera::rotate(float yaw, float pitch, float roll) {
     QQuaternion yawRotation = QQuaternion::fromAxisAndAngle(eyeUp(), yaw);
     target(yawRotation.rotatedVector(target() - eye()) + eye());
 
@@ -104,18 +125,19 @@ void Camera::zoom(float factor) {
 }
 
 QMatrix4x4 Camera::viewMatrix() {
-    QVector3D dirX = eyeRight();
-    QVector3D dirY = eyeUp();
-    QVector3D dirZ = eyeForward();
+    QVector3D z = eyeForward();
+    QVector3D y = eyeUp();
+    QVector3D x = eyeRight();
+    QVector3D position = eye();
 
-    QMatrix4x4 matrix {
-        dirX.x(), dirX.y(), dirX.z(), 0,
-        dirY.x(), dirY.y(), dirY.z(), 0,
-        dirZ.x(), dirZ.y(), dirZ.z(), 0,
-        0, 0, 0, 1
+    QMatrix4x4 view {
+        x.x(), x.y(), x.z(), -QVector3D::dotProduct(x, position),
+        y.x(), y.y(), y.z(), -QVector3D::dotProduct(y, position),
+        z.x(), z.y(), z.z(), -QVector3D::dotProduct(z, position),
+        0, 0, 0, 1,
     };
 
-    matrix.translate(-eye());
+    view.scale(scale());
 
-    return matrix;
+    return view;
 }

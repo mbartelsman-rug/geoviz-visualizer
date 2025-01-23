@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.16)
 
 project(GeoVizVisualizer3 VERSION 0.1 LANGUAGES CXX)
 
+set(QT6_TOOLCHAIN_PATH "C:/Qt/6.8.1/msvc2022_64")
+set(CMAKE_PREFIX_PATH "${QT6_TOOLCHAIN_PATH}/lib/cmake")
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -100,4 +103,10 @@ install(TARGETS GeoVizVisualizer3
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(GeoVizVisualizer3)
+endif()
+
+if (WIN32)
+    add_custom_command(TARGET GeoVizVisualizer3 POST_BUILD
+            COMMAND ${QT6_TOOLCHAIN_PATH}/bin/windeployqt6.exe --plugindir plugins ${CMAKE_CURRENT_BINARY_DIR}
+    )
 endif()

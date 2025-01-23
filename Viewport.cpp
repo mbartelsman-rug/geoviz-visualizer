@@ -49,9 +49,7 @@ void Viewport::paintGL() {
     makeCurrent();
 
     gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    float rand = (float) QRandomGenerator::global()->bounded(0.1);
-    gl->glClearColor(rand, rand, rand, 1.0f);
+    gl->glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 
     for (auto & model : scene->models) {
         model->render(gl);
@@ -76,14 +74,24 @@ void Viewport::mouseMoveEvent(QMouseEvent *event) {
     // LMB: Rotation
     if ((m_mouseButtons & Qt::LeftButton) && (event->buttons() & Qt::LeftButton)) {
         QPoint mouseDelta = event->pos() - m_mousePosition;
-        scene->camera->orbit(mouseDelta.x(), mouseDelta.y(), 0);
+
+        float deltaX = (float)mouseDelta.x();
+        float deltaY = (float)mouseDelta.y();
+
+        scene->camera->orbit(deltaX, deltaY, 0);
         cameraChanged = true;
     }
 
     // RMB: Movement
     if ((m_mouseButtons & Qt::RightButton) && (event->buttons() & Qt::RightButton)) {
         QPoint mouseDelta = event->pos() - m_mousePosition;
-        scene->camera->displace(mouseDelta.x(), mouseDelta.y(), 0);
+
+        float deltaX = -(float)mouseDelta.x();
+        float deltaY = (float)mouseDelta.y();
+        float length = (scene->camera->target() - scene->camera->eye()).length();
+        float factor = length / (scene->camera->scale() * (float)width());
+
+        scene->camera->displace(deltaX * factor, deltaY * factor, 0);
         cameraChanged = true;
     }
 
@@ -96,13 +104,14 @@ void Viewport::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void Viewport::wheelEvent(QWheelEvent *event) {
-    float delta = (float)event->pixelDelta().y();
-    float factor = qPow(1.1f, -delta / 120.0f);
+    float pixelDelta = ((float)event->pixelDelta().y()) / 120.0f;
+    float angleDelta = ((float)event->angleDelta().y()) / (8.0f * 8.0f);
 
-    QVector3D viewVector = scene->camera->eye() - scene->camera->target();
-    float targetDistance = viewVector.length();
-    float newTargetDistance = targetDistance * factor;
-    scene->camera->eye(viewVector.normalized() * newTargetDistance + scene->camera->target());
+    float delta = pixelDelta == 0 ? angleDelta : pixelDelta;
+    float factor = qPow(1.1f, -delta);
+
+    scene->camera->zoom(factor);
+    updateCamera();
 }
 
 void Viewport::updateCamera() {

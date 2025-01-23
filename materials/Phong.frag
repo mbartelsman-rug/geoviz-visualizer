@@ -52,5 +52,5 @@ vec3 phong_shading(vec3 coords, vec3 normal) {
 
 void main() {
     vec3 color = phong_shading(vertexPosition_fs, vertexNormal_fs);
-    color_out = abs(viewMatrix[0]);
+    color_out = vec4(color, 1.0);
 }
