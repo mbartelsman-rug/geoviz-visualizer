@@ -10,8 +10,9 @@ Plane::Plane(Material *mat)
 {
 }
 
-QMatrix4x4 Plane::modelMatrix() {
-    return {};
+
+QMatrix4x4 & Plane::modelMatrix() {
+    return m_transform;
 }
 
 Material * Plane::material() {

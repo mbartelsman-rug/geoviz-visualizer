@@ -2,7 +2,6 @@
 #define VIEWPORT_H
 
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions_4_1_Core>
 
 #include "Scene.h"
 

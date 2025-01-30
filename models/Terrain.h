@@ -1,20 +1,23 @@
 
-#ifndef PLANE_H
-#define PLANE_H
+#ifndef GEOVIZVISUALIZER3_MODELS_TERRAIN_HPP
+#define GEOVIZVISUALIZER3_MODELS_TERRAIN_HPP
+#pragma once
 
 #include "Model.h"
 
-class Plane : public Model {
+class Material;
+
+class Terrain : Model {
     Material * m_material { nullptr };
     GLuint m_vao { 0 };
     GLuint m_positions { 0 };
-    GLuint m_normals { 0 };
+    GLuint m_texcoords { 0 };
     GLuint m_indices { 0 };
 
-    QMatrix4x4 m_transform { };
+    QMatrix4x4 m_transform;
 
 public:
-    explicit Plane(Material * mat);
+    explicit Terrain(Material * mat);
 
     Material * material() override;
     void material(Material * value) override;
@@ -28,4 +31,4 @@ public:
 
 
 
-#endif //PLANE_H
+#endif //GEOVIZVISUALIZER3_MODELS_TERRAIN_HPP

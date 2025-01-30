@@ -47,6 +47,10 @@ set(PROJECT_SOURCES
         cameras/OrthographicCamera.h
         lights/Light.cpp
         lights/Light.h
+        models/Terrain.cpp
+        models/Terrain.h
+        materials/MapSurface.cpp
+        materials/MapSurface.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

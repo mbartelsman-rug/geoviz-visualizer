@@ -21,5 +21,6 @@ void main() {
 
     vertexPosition_fs = vec3(viewMatrix * modelMatrix * vertCoords);
     vertexNormal_fs = normalize(viewNormalMatrix * modelNormalMatrix * normalize(vertexNormal_in));
+    lightPos_fs = vec3(viewMatrix * vec4(lightPos, 1.0));
     gl_Position = projectionMatrix * viewModel * vertCoords;
 }

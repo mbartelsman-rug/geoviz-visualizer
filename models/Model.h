@@ -14,7 +14,7 @@ public:
     virtual Material * material() = 0;
     virtual void material(Material * value) = 0;
 
-    virtual QMatrix4x4 modelMatrix() = 0;
+    virtual QMatrix4x4 & modelMatrix() = 0;
 
     virtual void init(QOpenGLFunctions_4_1_Core * gl) = 0;
     virtual void update(QOpenGLFunctions_4_1_Core * gl) = 0;
