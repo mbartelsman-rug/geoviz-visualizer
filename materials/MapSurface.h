@@ -6,7 +6,7 @@
 #include <QOpenGLShaderProgram>
 
 
-class MapSurface : Material {
+class MapSurface : public Material {
     QString m_texture_filename;
     GLuint m_texture;
 

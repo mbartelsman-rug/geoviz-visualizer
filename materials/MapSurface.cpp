@@ -11,6 +11,7 @@ MapSurface::MapSurface(QString const & texture) : m_texture_filename { texture }
 
 void MapSurface::init(QOpenGLFunctions_4_1_Core * gl)
 {
+    qDebug() << "MapSurface::init()";
     program()->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/materials/MapSurface.vert");
     program()->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/materials/MapSurface.frag");
     program()->link();

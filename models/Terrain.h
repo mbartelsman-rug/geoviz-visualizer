@@ -7,7 +7,7 @@
 
 class Material;
 
-class Terrain : Model {
+class Terrain : public Model {
     Material * m_material { nullptr };
     GLuint m_vao { 0 };
     GLuint m_positions { 0 };

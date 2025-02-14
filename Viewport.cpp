@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 #include <QOpenGLVersionFunctionsFactory>
 #include <QRandomGenerator>
+#include <QTimer>
 
 #include "Scene.h"
 #include "materials/Material.h"
@@ -115,6 +116,7 @@ void Viewport::wheelEvent(QWheelEvent *event) {
 }
 
 void Viewport::updateCamera() {
+    makeCurrent();
     for (auto & material : scene->materials) {
         material->update(gl, *scene->camera);
     }
@@ -122,6 +124,7 @@ void Viewport::updateCamera() {
 }
 
 void Viewport::updateLight() {
+    makeCurrent();
     for (auto & material : scene->materials) {
         material->update(gl, *scene->light);
     }
@@ -129,6 +132,7 @@ void Viewport::updateLight() {
 }
 
 void Viewport::updateModels() {
+    makeCurrent();
     for (auto & model : scene->models) {
         model->update(gl);
         model->material()->update(gl, *model);
