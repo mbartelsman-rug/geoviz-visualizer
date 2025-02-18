@@ -5,6 +5,9 @@
 
 #include "materials/Material.h"
 
+Terrain::Terrain(Material *mat) : m_material(mat) {
+}
+
 Material * Terrain::material() { return m_material; }
 void Terrain::material(Material * value) { m_material = value; }
 
@@ -72,7 +75,7 @@ void Terrain::render(QOpenGLFunctions_4_1_Core * gl)
     gl->glUseProgram(id);
     gl->glBindVertexArray(m_vao);
     gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices);
-    gl->glDrawElements(GL_PATCHES, 4, GL_UNSIGNED_INT, nullptr);
+    gl->glDrawElements(GL_PATCHES, 1, GL_UNSIGNED_INT, nullptr);
     gl->glBindVertexArray(0);
     gl->glUseProgram(0);
 

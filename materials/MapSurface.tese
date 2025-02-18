@@ -35,7 +35,7 @@ void main()
     vec2 t0x = mix(t00, t01, u);
     vec2 t1x = mix(t10, t11, u);
 
-    vertexTexCoord_tes = mix(t0, t1, v);
+    vertexTexCoord_tes = mix(t0x, t1x, v);
 
     vertexHeight_tes = texture(heightMap, vertexTexCoord_tes).y;
 
@@ -62,8 +62,8 @@ void main()
     float dx = 1.0 / gl_TessLevelInner[0];
     float dy = 1.0 / gl_TessLevelInner[1];
     float z00 = texture(heightMap, vertexTexCoord_tes + vec2(0, 0)).y;
-    float z01 = texture(heightMap, vertexTexCoord_tes + vec2(0, d)).y;
-    float z10 = texture(heightMap, vertexTexCoord_tes + vec2(d, 0)).y;
+    float z01 = texture(heightMap, vertexTexCoord_tes + vec2(0, dy)).y;
+    float z10 = texture(heightMap, vertexTexCoord_tes + vec2(dx, 0)).y;
     float dzdx = z10 - z00;
     float dzdy = z01 - z00;
 

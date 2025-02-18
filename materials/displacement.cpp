@@ -42,6 +42,9 @@ void Displacement::update(QOpenGLFunctions_4_1_Core * gl) {
     gl->glUniform1f(gl->glGetUniformLocation(id, "ambientCoefficient"), ambientCoefficient);
     gl->glUniform1f(gl->glGetUniformLocation(id, "shininess"), shininess);
 
+
+    gl->glDisable(GL_CULL_FACE);
+
     // Displacement
     QImage gray(numX, numY, QImage::Format_Grayscale16);
 

@@ -23,18 +23,18 @@ float u = gl_TessCoord.x;
 float v = gl_TessCoord.y;
 
 vec3 pos = mix(
-    mix(vertcoords_tc[0], vertcoords_tc[1], u),
-    mix(vertcoords_tc[3],  vertcoords_tc[2], u),
+    mix(vertcoords_tc[1], vertcoords_tc[0], u),
+    mix(vertcoords_tc[2],  vertcoords_tc[3], u),
     v  
 );
 
 vec3 normal = mix(
-    mix(vertnormals_tc[0], vertnormals_tc[1], u),
-    mix(vertnormals_tc[3],  vertnormals_tc[2], u),
+    mix(vertnormals_tc[1], vertnormals_tc[0], u),
+    mix(vertnormals_tc[2],  vertnormals_tc[3], u),
     v  
 );
 
-float scale = 100; // TODO make uniform
+float scale = 10; // TODO make uniform
 float value = texture2D(texture, vec2(u,v)).r;
 float height = value * scale;
 

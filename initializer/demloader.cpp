@@ -15,7 +15,7 @@ DemLoader::~DemLoader(){
 
 
 Displacement *DemLoader::getDisplacement(){
-    GDALAllRegister(); // TODO move to main
+    GDALAllRegister(); 
 
     const GDALAccess eAccess = GA_ReadOnly;
     poDataset = GDALDatasetUniquePtr(GDALDataset::FromHandle(GDALOpen(fileName.toLocal8Bit().data(), eAccess)));
@@ -75,15 +75,7 @@ Displacement *DemLoader::getDisplacement(){
     float *pafScanline;
     int   nXSize = poBand->GetXSize();
     pafScanline = (float *) CPLMalloc(sizeof(float)*nXSize);
-    /*CPLErr readErr = poBand->RasterIO( GF_Read, 0, 0, nXSize, 1,
-                     pafScanline, nXSize, 1, GDT_Float32,
-                     0, 0 );
-    */
     QVector<float> data;
-
-
-    // TODO REMOVE
-    int count0 = 0;
 
     for(int x = 0; x < nBlockXSize; x++ ){
         CPLErr readErr = poBand->RasterIO( GF_Read, 0, x, nXSize, 1,
@@ -93,19 +85,10 @@ Displacement *DemLoader::getDisplacement(){
             qDebug() << "Read error!" << readErr;
         }
 
-        // TODO change, replace with memcpy if too slow
         for(int y = 0; y < nBlockYSize; y++){
             data.push_back(pafScanline[y]);
-
-            if (pafScanline[y] == 0)
-                count0++;
         }
     }
-
-    qDebug() << "Num zero:" << count0 << "total:" << nBlockXSize * nBlockYSize << data.size();
-
-
-    qDebug() << std::max_element(data.cbegin(), data.cend())[0];
 
     Displacement *disp = new Displacement();
     disp->setData(data, nBlockXSize, nBlockYSize);
