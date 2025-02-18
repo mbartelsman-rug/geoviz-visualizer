@@ -5,7 +5,7 @@
 
 
 struct Settings {
-
+    bool wireFrameMode = false;
 };
 
 

@@ -12,5 +12,5 @@ void main() {
     vertexPosition_vs = vertexPosition_in;
     vertexTexCoord_vs = vertexTexCoord_in;
 
-    gl_Position = vertexPosition_in;
+    gl_Position = vec4(vertexPosition_in, 1);
 }

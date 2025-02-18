@@ -1,13 +1,15 @@
 <RCC>
-    <qresource>
+    <qresource prefix="/">
         <file>materials/Phong.vert</file>
         <file>materials/Phong.frag</file>
         <file>materials/MapSurface.vert</file>
         <file>materials/MapSurface.tesc</file>
         <file>materials/MapSurface.tese</file>
         <file>materials/MapSurface.frag</file>
-    </qresource>
-    <qresource>
+        <file>materials/Displacement.vert</file>
+        <file>materials/Displacement.tese</file>
+        <file>materials/Displacement.tesc</file>
+        <file>materials/Displacement.frag</file>
         <file>resources/textures/fractal_noise.png</file>
     </qresource>
 </RCC>

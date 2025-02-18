@@ -46,8 +46,7 @@ void Plane::update(QOpenGLFunctions_4_1_Core * gl) {
         { 0, 1, 0 },
     };
     QList<GLuint> indices = {
-        0, 1, 2,
-        2, 3, 0,
+        0, 1, 2, 3
     };
 
     gl->glBindVertexArray(m_vao);
@@ -77,7 +76,9 @@ void Plane::render(QOpenGLFunctions_4_1_Core * gl) {
     gl->glUseProgram(id);
     gl->glBindVertexArray(m_vao);
     gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices);
-    gl->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+    gl->glPatchParameteri(GL_PATCH_VERTICES, 4);
+    gl->glDrawElements(GL_PATCHES, 4, GL_UNSIGNED_INT, nullptr);
     gl->glBindVertexArray(0);
     gl->glUseProgram(0);
 }

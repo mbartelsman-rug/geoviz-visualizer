@@ -51,6 +51,12 @@ void Viewport::paintGL() {
     gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     gl->glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 
+    if (settings.wireFrameMode) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    } else {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
     for (auto & model : scene->models) {
         model->render(gl);
     }
@@ -62,13 +68,15 @@ void Viewport::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void Viewport::mousePressEvent(QMouseEvent *event) {
+    // In order to allow keyPressEvents:
+    setFocus();
+
     m_mouseButtons = event->buttons();
     m_mousePosition = event->pos();
 }
 
 void Viewport::mouseMoveEvent(QMouseEvent *event) {
     QOpenGLWidget::mouseMoveEvent(event);
-
     bool cameraChanged = false;
 
     // LMB: Rotation
@@ -112,6 +120,15 @@ void Viewport::wheelEvent(QWheelEvent *event) {
 
     scene->camera->zoom(factor);
     updateCamera();
+}
+
+void Viewport::keyPressEvent(QKeyEvent* event) {
+    switch (event->key()) {
+    case 'Z':
+        settings.wireFrameMode = !settings.wireFrameMode;
+        update();
+        break;
+    }
 }
 
 void Viewport::updateCamera() {

@@ -16,7 +16,7 @@ struct Scene {
 
     Camera * camera { new PerspectiveCamera() };
     Light * light { new Light() };
-    QList<Material *> materials { new Phong };
+    QList<Material *> materials {/* new Phong*/ };
     QList<Model *> models { };
 };
 
