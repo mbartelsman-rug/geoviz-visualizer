@@ -12,11 +12,27 @@ Displacement::Displacement() {
 }
 
 void Displacement::setData(QVector<float> &data, int numX, int numY){
-    this->data.clear();
-    this->data.append(data);
-
     this->numX = numX;
     this->numY = numY;
+
+    // Set image data
+    this->image = QImage(numX, numY, QImage::Format_Grayscale16);
+
+    float max_val = std::max_element(data.cbegin(), data.cend())[0];
+    float min_val = std::min_element(data.cbegin(), data.cend())[0];
+    qDebug() << "Max" << max_val << "min" << min_val;
+
+    int i = 0;
+    for (float elem : data){
+        quint16 val = std::max(elem, 0.0f);
+
+        //dst[i] = val;
+        int x = i % numX;
+        int y = i / numX;
+        ((quint16 *)image.scanLine(y))[x] = val;
+
+        i++;
+    }
 }
 
 
@@ -42,28 +58,7 @@ void Displacement::update(QOpenGLFunctions_4_1_Core * gl) {
     gl->glUniform1f(gl->glGetUniformLocation(id, "ambientCoefficient"), ambientCoefficient);
     gl->glUniform1f(gl->glGetUniformLocation(id, "shininess"), shininess);
 
-
-    gl->glDisable(GL_CULL_FACE);
-
     // Displacement
-    QImage gray(numX, numY, QImage::Format_Grayscale16);
-
-    float max_val = std::max_element(data.cbegin(), data.cend())[0];
-    float min_val = std::min_element(data.cbegin(), data.cend())[0];
-    qDebug() << "Max" << max_val << "min" << min_val;
-
-    int i = 0;
-    for (float elem : data){
-        quint16 val = std::max(elem, 0.0f);
-
-        //dst[i] = val;
-        int x = i % numX;
-        int y = i / numX;
-        ((quint16 *)gray.scanLine(y))[x] = val;
-
-        i++;
-    }
-
     gl->glEnable(GL_TEXTURE_2D); // Enable texturing
     gl->glBindTexture(GL_TEXTURE_2D, texBufferID); // Set as the current texture
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -75,12 +70,12 @@ void Displacement::update(QOpenGLFunctions_4_1_Core * gl) {
         GL_TEXTURE_2D,
         0,
         GL_RED,
-        gray.width(),
-        gray.height(),
+        image.width(),
+        image.height(),
         0,
         GL_RED,
         GL_UNSIGNED_SHORT,
-        gray.bits()
+        image.bits()
         );
 
     gl->glDisable(GL_TEXTURE_2D);

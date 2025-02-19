@@ -52,6 +52,8 @@ void Viewport::paintGL() {
     gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     gl->glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 
+    gl->glEnable(GL_DEPTH_TEST);
+
     if (settings.wireFrameMode) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     } else {

@@ -12,8 +12,6 @@ public:
     Displacement();
     ~Displacement() = default;
 
-    inline QVector<float> &getData() {return data; };
-
     QImage toImage() const;
     void setData(QVector<float> &data, int numX, int numY);
 
@@ -37,7 +35,7 @@ public:
 
 
 private:
-    QVector<float> data = QVector<float>();
+    QImage image;
     int numX;
     int numY;
 
