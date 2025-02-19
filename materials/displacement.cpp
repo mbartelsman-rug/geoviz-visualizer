@@ -37,16 +37,24 @@ QImage Displacement::getQImage(QVector<float> &data, int numX, int numY, bool sc
 
 Displacement::Displacement()
 {
+    this->data = new QVector<float>();
+    this->dst = new QVector<float>();
 }
 
-void Displacement::setData(QVector<float> &data, int numX, int numY)
+Displacement::~Displacement()
 {
+    delete data;
+    delete dst;
+}
+
+void Displacement::setData(QVector<float> &newData, int numX, int numY)
+{
+    // Set image data
+    this->data->clear();
+    this->data->append(newData);
+
     this->numX = numX;
     this->numY = numY;
-
-    // Set image data
-    this->data = data;
-    this->image = getQImage(data, numX, numY);
 
     computeDistanceTransform();
 }
@@ -59,7 +67,8 @@ void Displacement::computeDistanceTransform()
     qDebug() << "Calculating distance transform...";
 
     QVector<float> g(numX * numY);
-    QVector<float> distance(numX * numY);
+    //QVector<float> dst = QVector<float>(numX * numY);
+    dst->resize(numX * numY);
 
     const float inf = numX + numY;
 
@@ -95,7 +104,7 @@ void Displacement::computeDistanceTransform()
     for (int x = 0; x < numX; x++)
     {
         // Scan 1
-        if (getPxl(data, x, 0) > 0)
+        if (getPxl(*data, x, 0) > 0)
         {
             setPxl(g, x, 0, 0);
         }
@@ -106,7 +115,7 @@ void Displacement::computeDistanceTransform()
 
         for (int y = 1; y < numY; y++)
         {
-            if (getPxl(data, x, y) > 0)
+            if (getPxl(*data, x, y) > 0)
             {
                 setPxl(g, x, y, 0);
             }
@@ -164,7 +173,7 @@ void Displacement::computeDistanceTransform()
         for (int u = numX - 1; u >= 0; u--)
         {
             float pixelValue = sqrt(f(u, s[q], y));
-            setPxl(distance, u, y, pixelValue);
+            setPxl(*dst, u, y, pixelValue);
             if (u == t[q])
             {
                 q = q - 1;
@@ -172,8 +181,6 @@ void Displacement::computeDistanceTransform()
         }
     }
     qDebug() << "...Done";
-
-    edt = getQImage(distance, numX, numY, false);
 }
 
 void Displacement::init(QOpenGLFunctions_4_1_Core *gl)
@@ -204,22 +211,30 @@ void Displacement::update(QOpenGLFunctions_4_1_Core *gl)
 
     // Displacement
     gl->glEnable(GL_TEXTURE_2D);                   // Enable texturing
-    gl->glBindTexture(GL_TEXTURE_2D, texBufferID); // Set as the current texture
-    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    gl->glGenTextures(1, &textureID);
+    gl->glGenTextures(1, &dstID);
+
+    gl->glActiveTexture(GL_TEXTURE0 + 0);
+    gl->glBindTexture(GL_TEXTURE_2D, textureID); // Set as the current texture
+
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    gl->glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RED,
-        image.width(),
-        image.height(),
-        0,
-        GL_RED,
-        GL_UNSIGNED_SHORT,
-        image.bits());
+    glTexImage2D(GL_TEXTURE_2D,0,GL_R32F,numX, numY,0,GL_RED,GL_FLOAT,data->data());
+
+    // Distance transform texture
+    gl->glActiveTexture(GL_TEXTURE0 + 1);
+    gl->glBindTexture(GL_TEXTURE_2D, dstID);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_R32F,numX, numY,0,GL_RED,GL_FLOAT,dst->data());
+
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 
     gl->glDisable(GL_TEXTURE_2D);
     gl->glUseProgram(0);

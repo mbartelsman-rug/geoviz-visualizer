@@ -1,4 +1,4 @@
-#version 410
+#version 420
 // Tesselation Control Shader (TCS)
 layout(vertices = 4) out;
 
@@ -10,7 +10,7 @@ layout(location = 1) out vec3[] vertnormals_tc;
 
 void main() {
   if (gl_InvocationID == 0) {
-    float tessLevel = 9999; // Maximum tessellation (probably capped at 64)
+    float tessLevel = 64; // Maximum tessellation
     gl_TessLevelOuter[0] = tessLevel;
     gl_TessLevelOuter[1] = tessLevel;
     gl_TessLevelOuter[2] = tessLevel;

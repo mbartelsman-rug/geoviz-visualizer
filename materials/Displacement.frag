@@ -1,10 +1,11 @@
-#version 410
+#version 420
 // Fragment shader
 
 layout(location = 0) in vec3 vertcoords_te;
 layout(location = 1) in vec3 vertnormals_te;
 layout(location = 2) in vec3 lightPos_fs;
 layout(location = 3) in vec3 in_color;
+layout(location = 4) in vec2 uv_fr;
 
 out vec4 color_out;
 
@@ -26,35 +27,50 @@ uniform mat3 modelNormalMatrix;
 uniform mat3 viewNormalMatrix;
 uniform vec3 lightPos;
 
-uniform sampler2D texture;
+layout(binding=0) uniform sampler2D txt;
+layout(binding=1) uniform sampler2D dst;
 
 const vec3 cameraPos = vec3(0.0);
 
-vec3 phong_shading(vec3 coords, vec3 normal) {
-    vec3 surf2Light = normalize(lightPos_fs - coords);
-    vec3 surf2Camera = normalize(cameraPos - coords);
+void main() {
+    float scale = 0.0002; // TODO make uniform
+    float value = texture(txt, uv_fr).r;
+    float height = value * scale;
 
-    vec3 orientedDiffuseColor = diffuseColor;
-    if (!gl_FrontFacing) {
-        // Make the inside a different shade.
-        normal *= -1;
-        orientedDiffuseColor = vec3(1.0, 0, 0);
+    vec3 color;
+
+    if (height == 0.0){
+        float length = texture(dst, uv_fr).r;
+
+        length = uv_fr.r;
+
+        float num = 0.05;
+        float eps = 0.01;
+
+        if (length - floor(length / num) * num < eps){
+            color = vec3(0, 0, 0.8);
+        } else {
+            color = vec3(0.5, 0.5, 1);
+        }
+    } else {
+        float max_value_color = 1000.0; // TODO make uniform
+
+        color = vec3(0, 0.3, 0);
+        color.g += min(value / max_value_color, 1.0) * (1 - color.g);
     }
 
-    vec3 reflected = reflect(surf2Light, normal);
 
-    float lightAngle = max(dot(surf2Light, normal), 0);
-    float reflection_angle = max(dot(reflected, surf2Camera), 0);
 
-    vec3 ambient_comp = ambientCoefficient * ambientColor;
-    vec3 diffuse_comp = diffuseCoefficient * orientedDiffuseColor * lightColor * lightAngle;
-    vec3 specular_comp = specularCoefficient * pow(reflection_angle, shininess) * specularColor;
+/*
+    // TODO remove
+    color = texture(dst, uv_fr).rrr;
+    if (texture(dst, uv_fr).r > 0) {
+        color = vec3(0, 1, 0);
+    }
 
-    return min(ambient_comp + diffuse_comp + specular_comp, 1);
-}
+*/
 
-void main() {
-    vec3 color = phong_shading(vertcoords_te, vertnormals_te);
 
-    color_out = vec4(in_color, 1.0);
+
+    color_out = vec4(color, 1);
 }

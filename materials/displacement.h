@@ -10,7 +10,7 @@
 class Displacement: public Material {
 public:
     Displacement();
-    ~Displacement() = default;
+    ~Displacement();
 
     QImage toImage() const;
     void setData(QVector<float> &data, int numX, int numY);
@@ -35,18 +35,17 @@ public:
 
 
 private:
-    QImage image;
-    QImage edt;
-    QVector<float> data;
-    int numX;
-    int numY;
+    QVector<float> *data;
+    int numX = 0;
+    int numY = 0;
+    QVector<float> *dst;
 
     void computeDistanceTransform();
     static QImage getQImage(QVector<float> &data, int numX, int numY, bool scale);
 
     QOpenGLShaderProgram m_program;
 
-    GLuint texBufferID;
+    GLuint textureID, dstID;
 };
 
 

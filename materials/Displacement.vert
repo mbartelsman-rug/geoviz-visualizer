@@ -1,4 +1,4 @@
-#version 410
+#version 420
 // Vertex shader
 
 layout(location = 0) in vec3 vertexPosition_in;
@@ -6,8 +6,6 @@ layout(location = 1) in vec3 vertexNormal_in;
 
 layout(location = 0) out vec3 vertcoords_vs;
 layout(location = 1) out vec3 vertnormals_vs;
-//layout(location = 2) out vec3 lightPos_fs;
-//layout(location = 3) out vec2 texCoord;
 
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
