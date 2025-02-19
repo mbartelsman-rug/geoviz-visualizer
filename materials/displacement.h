@@ -36,8 +36,13 @@ public:
 
 private:
     QImage image;
+    QImage edt;
+    QVector<float> data;
     int numX;
     int numY;
+
+    void computeDistanceTransform();
+    static QImage getQImage(QVector<float> &data, int numX, int numY, bool scale);
 
     QOpenGLShaderProgram m_program;
 

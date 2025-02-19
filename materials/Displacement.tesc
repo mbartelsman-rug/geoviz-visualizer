@@ -10,7 +10,7 @@ layout(location = 1) out vec3[] vertnormals_tc;
 
 void main() {
   if (gl_InvocationID == 0) {
-    float tessLevel = 1000; // TODO uniform or adaptive
+    float tessLevel = 9999; // Maximum tessellation (probably capped at 64)
     gl_TessLevelOuter[0] = tessLevel;
     gl_TessLevelOuter[1] = tessLevel;
     gl_TessLevelOuter[2] = tessLevel;
