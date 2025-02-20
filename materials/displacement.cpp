@@ -72,7 +72,7 @@ void Displacement::computeDistanceTransform()
 
     const float inf = numX + numY;
 
-    auto sq = [](float num)
+    auto sq = [](double num)
     {
         return num * num;
     };
@@ -135,14 +135,18 @@ void Displacement::computeDistanceTransform()
         }
     }
 
+    QVector<double> s = {0};
+    s.resize(numX);
+
+    QVector<double> t = {0};
+    t.resize(numX);
+
     // Second phase
     for (int y = 0; y < numY; y++)
     {
         int q = 0;
-        QVector<float> s = {0};
-        s.resize(numX);
-        QVector<float> t = {0};
-        t.resize(numX);
+        s[0] = 0;
+        t[0] = 0;
 
         // Scan 3
         for (int u = 1; u < numX; u++)
@@ -158,7 +162,12 @@ void Displacement::computeDistanceTransform()
             }
             else
             {
-                float w = 1 + sep(s[q], u, y);
+                int w = 1 + sep(s[q], u, y);
+
+                if (y == 244){
+                    int w2 = sep(s[q], u, y);
+                    qDebug() << "u q w sep" << u << q << w << w2;
+                }
 
                 if (w < numX)
                 {
@@ -173,6 +182,11 @@ void Displacement::computeDistanceTransform()
         for (int u = numX - 1; u >= 0; u--)
         {
             float pixelValue = sqrt(f(u, s[q], y));
+
+            if (u == 0 && pixelValue > 2000){// TODO REMOVE
+                qDebug() << "y val" << y << pixelValue;
+            }
+
             setPxl(*dst, u, y, pixelValue);
             if (u == t[q])
             {
@@ -181,6 +195,8 @@ void Displacement::computeDistanceTransform()
         }
     }
     qDebug() << "...Done";
+    getQImage(*data, numX, numY, true).save("/home/bob/Documents2/Uni/GeoVisualization/project/geoviz-visualizer/data/data.png");
+    getQImage(*dst, numX, numY, true).save("/home/bob/Documents2/Uni/GeoVisualization/project/geoviz-visualizer/data/dst2.png");
 }
 
 void Displacement::init(QOPENGLFUNCTIONS *gl)
@@ -211,7 +227,6 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
 
     // Displacement
     gl->glEnable(GL_TEXTURE_2D);
-
 
     gl->glCreateTextures(GL_TEXTURE_2D, 1, &textures[0]);
 
