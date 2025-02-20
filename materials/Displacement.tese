@@ -1,4 +1,4 @@
-#version 420
+#version 460
 layout(quads, equal_spacing, ccw) in;
 
 layout(location = 0) in vec3[] vertcoords_tc;
@@ -17,8 +17,11 @@ uniform mat3 modelNormalMatrix;
 uniform mat3 viewNormalMatrix;
 uniform vec3 lightPos;
 
-layout(binding=0) uniform sampler2D txt;
-layout(binding=1) uniform sampler2D dst;
+uniform sampler2D txt;
+
+float get_terrain(float u, float v){
+    return texture(txt, vec2(u/2,v)).r;
+}
 
 void main() {
 float u = gl_TessCoord.x;
@@ -39,7 +42,7 @@ vec3 normal = mix(
 );
 
 float scale = 0.0002; // TODO make uniform
-float value = texture(txt, vec2(u,v)).r;
+float value = get_terrain(u, v);
 float height = value * scale;
 
 pos.y = pos.y + height;

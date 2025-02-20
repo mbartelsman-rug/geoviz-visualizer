@@ -8,7 +8,7 @@
 Phong::Phong() {
 }
 
-void Phong::init(QOpenGLFunctions_4_1_Core * gl) {
+void Phong::init(QOPENGLFUNCTIONS * gl) {
     program()->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/materials/Phong.vert");
     program()->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/materials/Phong.frag");
     program()->link();
@@ -17,7 +17,7 @@ void Phong::init(QOpenGLFunctions_4_1_Core * gl) {
     }
 }
 
-void Phong::update(QOpenGLFunctions_4_1_Core * gl) {
+void Phong::update(QOPENGLFUNCTIONS * gl) {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
     gl->glUniform3f(gl->glGetUniformLocation(id, "diffuseColor"), diffuseColor[0], diffuseColor[1], diffuseColor[2]);
@@ -30,7 +30,7 @@ void Phong::update(QOpenGLFunctions_4_1_Core * gl) {
     gl->glUseProgram(0);
 }
 
-void Phong::update(QOpenGLFunctions_4_1_Core * gl, Camera &camera) {
+void Phong::update(QOPENGLFUNCTIONS * gl, Camera &camera) {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
     gl->glUniformMatrix4fv(gl->glGetUniformLocation(id, "viewMatrix"), 1, false, camera.viewMatrix().data());
@@ -39,7 +39,7 @@ void Phong::update(QOpenGLFunctions_4_1_Core * gl, Camera &camera) {
     gl->glUseProgram(0);
 }
 
-void Phong::update(QOpenGLFunctions_4_1_Core * gl, Model &model) {
+void Phong::update(QOPENGLFUNCTIONS * gl, Model &model) {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
     gl->glUniformMatrix4fv(gl->glGetUniformLocation(id, "modelMatrix"), 1, false, model.modelMatrix().data());
@@ -47,7 +47,7 @@ void Phong::update(QOpenGLFunctions_4_1_Core * gl, Model &model) {
     gl->glUseProgram(0);
 }
 
-void Phong::update(QOpenGLFunctions_4_1_Core * gl, Light &light) {
+void Phong::update(QOPENGLFUNCTIONS * gl, Light &light) {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
     gl->glUniform3f(gl->glGetUniformLocation(id, "lightPos"), light.position()[0], light.position()[1], light.position()[2]);

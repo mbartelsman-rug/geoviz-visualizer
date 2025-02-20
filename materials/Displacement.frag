@@ -1,4 +1,4 @@
-#version 420
+#version 460
 // Fragment shader
 
 layout(location = 0) in vec3 vertcoords_te;
@@ -27,29 +27,40 @@ uniform mat3 modelNormalMatrix;
 uniform mat3 viewNormalMatrix;
 uniform vec3 lightPos;
 
-layout(binding=0) uniform sampler2D txt;
-layout(binding=1) uniform sampler2D dst;
+uniform sampler2D txt;
+
+float get_terrain(float u, float v){
+    return texture(txt, vec2(u/2,v)).r;
+}
+
+float get_dmap(float u, float v){
+    return texture(txt, vec2(0.5 + u/2,v)).r;
+}
 
 const vec3 cameraPos = vec3(0.0);
 
 void main() {
+    float u = uv_fr.r;
+    float v = uv_fr.g;
+
     float scale = 0.0002; // TODO make uniform
-    float value = texture(txt, uv_fr).r;
+    float value = get_terrain(u,v);
     float height = value * scale;
 
     vec3 color;
 
     if (height == 0.0){
-        float length = texture(dst, uv_fr).r;
+        float length = get_dmap(u, v);
 
-        length = uv_fr.r;
+        //length = uv_fr.r;
 
-        float num = 0.05;
-        float eps = 0.01;
+        float num = 50;
+        float thickness = 10;
 
-        if (length - floor(length / num) * num < eps){
+        // waterline
+        if (floor(length / num) != 0 && length - floor(length / num) * num < thickness){
             color = vec3(0, 0, 0.8);
-        } else {
+        } else { // normal water
             color = vec3(0.5, 0.5, 1);
         }
     } else {
@@ -58,8 +69,6 @@ void main() {
         color = vec3(0, 0.3, 0);
         color.g += min(value / max_value_color, 1.0) * (1 - color.g);
     }
-
-
 
 /*
     // TODO remove

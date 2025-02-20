@@ -12,12 +12,12 @@ class Phong : public Material {
 public:
     explicit Phong();
 
-    void init(QOpenGLFunctions_4_1_Core * gl) override;
+    void init(QOPENGLFUNCTIONS * gl) override;
 
-    void update(QOpenGLFunctions_4_1_Core * gl) override;
-    void update(QOpenGLFunctions_4_1_Core * gl, Camera & camera) override;
-    void update(QOpenGLFunctions_4_1_Core * gl, Model & model) override;
-    void update(QOpenGLFunctions_4_1_Core * gl, Light & light) override;
+    void update(QOPENGLFUNCTIONS * gl) override;
+    void update(QOPENGLFUNCTIONS * gl, Camera & camera) override;
+    void update(QOPENGLFUNCTIONS * gl, Model & model) override;
+    void update(QOPENGLFUNCTIONS * gl, Light & light) override;
 
     QOpenGLShaderProgram * program() override;
 

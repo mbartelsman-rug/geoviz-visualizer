@@ -15,7 +15,7 @@ void Terrain::material(Material * value) { m_material = value; }
 QMatrix4x4 & Terrain::modelMatrix() { return m_transform; }
 
 
-void Terrain::init(QOpenGLFunctions_4_1_Core * gl)
+void Terrain::init(QOPENGLFUNCTIONS * gl)
 {
     gl->glGenVertexArrays(1, &m_vao);
     gl->glBindVertexArray(m_vao);
@@ -35,7 +35,7 @@ void Terrain::init(QOpenGLFunctions_4_1_Core * gl)
     gl->glBindVertexArray(0);
 }
 
-void Terrain::update(QOpenGLFunctions_4_1_Core * gl)
+void Terrain::update(QOPENGLFUNCTIONS * gl)
 {
     QList<QVector3D> vertices = {
         { -1, 0, -1 },
@@ -67,7 +67,7 @@ void Terrain::update(QOpenGLFunctions_4_1_Core * gl)
     gl->glBindVertexArray(0);
 }
 
-void Terrain::render(QOpenGLFunctions_4_1_Core * gl)
+void Terrain::render(QOPENGLFUNCTIONS * gl)
 {
     gl->glPatchParameteri(GL_PATCH_VERTICES, 4);
 

@@ -1,7 +1,7 @@
 
 #ifndef MATERIAL_H
 #define MATERIAL_H
-#include <QOpenGLFunctions_4_1_Core>
+#include "openglfunction.h"
 
 class QOpenGLShaderProgram;
 class Light;
@@ -13,11 +13,11 @@ public:
     explicit Material() = default;
     virtual ~Material() = default;
 
-    virtual void init(QOpenGLFunctions_4_1_Core * gl) = 0;
-    virtual void update(QOpenGLFunctions_4_1_Core * gl) = 0;
-    virtual void update(QOpenGLFunctions_4_1_Core * gl, Camera & camera) = 0;
-    virtual void update(QOpenGLFunctions_4_1_Core * gl, Light & light) = 0;
-    virtual void update(QOpenGLFunctions_4_1_Core * gl, Model & model) = 0;
+    virtual void init(QOPENGLFUNCTIONS * gl) = 0;
+    virtual void update(QOPENGLFUNCTIONS * gl) = 0;
+    virtual void update(QOPENGLFUNCTIONS * gl, Camera & camera) = 0;
+    virtual void update(QOPENGLFUNCTIONS * gl, Light & light) = 0;
+    virtual void update(QOPENGLFUNCTIONS * gl, Model & model) = 0;
 
     virtual QOpenGLShaderProgram * program() = 0;
 };

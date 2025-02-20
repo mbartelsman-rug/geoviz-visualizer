@@ -14,11 +14,11 @@ class MapSurface : public Material {
 
 public:
     explicit MapSurface(QString const & texture);
-    void init(QOpenGLFunctions_4_1_Core * gl) override;
-    void update(QOpenGLFunctions_4_1_Core * gl) override;
-    void update(QOpenGLFunctions_4_1_Core * gl, Camera & camera) override;
-    void update(QOpenGLFunctions_4_1_Core * gl, Light & light) override;
-    void update(QOpenGLFunctions_4_1_Core * gl, Model & model) override;
+    void init(QOPENGLFUNCTIONS * gl) override;
+    void update(QOPENGLFUNCTIONS * gl) override;
+    void update(QOPENGLFUNCTIONS * gl, Camera & camera) override;
+    void update(QOPENGLFUNCTIONS * gl, Light & light) override;
+    void update(QOPENGLFUNCTIONS * gl, Model & model) override;
     QOpenGLShaderProgram * program() override;
 };
 

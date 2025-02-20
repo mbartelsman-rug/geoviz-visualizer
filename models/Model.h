@@ -2,7 +2,7 @@
 #define MODEL_H
 
 #include <QMatrix4x4>
-#include <QOpenGLFunctions_4_1_Core>
+#include "openglfunction.h"
 
 class Material;
 
@@ -15,9 +15,9 @@ public:
 
     virtual QMatrix4x4 & modelMatrix() = 0;
 
-    virtual void init(QOpenGLFunctions_4_1_Core * gl) = 0;
-    virtual void update(QOpenGLFunctions_4_1_Core * gl) = 0;
-    virtual void render(QOpenGLFunctions_4_1_Core * gl) = 0;
+    virtual void init(QOPENGLFUNCTIONS * gl) = 0;
+    virtual void update(QOPENGLFUNCTIONS * gl) = 0;
+    virtual void render(QOPENGLFUNCTIONS * gl) = 0;
 };
 
 

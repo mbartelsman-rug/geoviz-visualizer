@@ -7,6 +7,22 @@
 
 #include "Scene.h"
 #include "materials/Material.h"
+#include "openglfunction.h"
+
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                GLenum type,
+                GLuint id,
+                GLenum severity,
+                GLsizei length,
+                const GLchar* message,
+                const void* userParam )
+{
+    fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+            ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+
 
 Viewport::Viewport(QWidget * parent) : QOpenGLWidget(parent) {
 }
@@ -16,17 +32,24 @@ Viewport::~Viewport() = default;
 void Viewport::initializeGL() {
     QOpenGLWidget::initializeGL();
     makeCurrent();
-    gl = QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_1_Core>(context());
+    gl = QOpenGLVersionFunctionsFactory::get<QOPENGLFUNCTIONS>(context());
+
+    // enable debug output
+    gl->glEnable              ( GL_DEBUG_OUTPUT );
+    gl->glDebugMessageCallback( MessageCallback, 0 );
+
     scene = new Scene();
+
+    for (auto & material : scene->materials) {
+        material->init(gl);
+        material->update(gl);
+    }
 
     for (auto & model : scene->models) {
         model->init(gl);
         model->update(gl);
     }
-    for (auto & material : scene->materials) {
-        material->init(gl);
-        material->update(gl);
-    }
+
 
     updateCamera();
     updateLight();

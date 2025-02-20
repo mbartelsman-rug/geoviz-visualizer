@@ -1,4 +1,4 @@
-#version 420
+#version 460
 // Vertex shader
 
 layout(location = 0) in vec3 vertexPosition_in;

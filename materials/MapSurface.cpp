@@ -9,7 +9,7 @@
 MapSurface::MapSurface(QString const & texture) : m_texture_filename { texture } {}
 
 
-void MapSurface::init(QOpenGLFunctions_4_1_Core * gl)
+void MapSurface::init(QOPENGLFUNCTIONS * gl)
 {
     qDebug() << "MapSurface::init()";
     program()->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/materials/MapSurface.vert");
@@ -31,7 +31,7 @@ void MapSurface::init(QOpenGLFunctions_4_1_Core * gl)
 
 }
 
-void MapSurface::update(QOpenGLFunctions_4_1_Core * gl) {
+void MapSurface::update(QOPENGLFUNCTIONS * gl) {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
 
@@ -50,7 +50,7 @@ void MapSurface::update(QOpenGLFunctions_4_1_Core * gl) {
     gl->glUseProgram(0);
 }
 
-void MapSurface::update(QOpenGLFunctions_4_1_Core * gl, Camera &camera) {
+void MapSurface::update(QOPENGLFUNCTIONS * gl, Camera &camera) {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
     gl->glUniformMatrix4fv(gl->glGetUniformLocation(id, "viewMatrix"), 1, false, camera.viewMatrix().data());
@@ -59,7 +59,7 @@ void MapSurface::update(QOpenGLFunctions_4_1_Core * gl, Camera &camera) {
     gl->glUseProgram(0);
 }
 
-void MapSurface::update(QOpenGLFunctions_4_1_Core * gl, Model &model) {
+void MapSurface::update(QOPENGLFUNCTIONS * gl, Model &model) {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
     gl->glUniformMatrix4fv(gl->glGetUniformLocation(id, "modelMatrix"), 1, false, model.modelMatrix().data());
@@ -67,7 +67,7 @@ void MapSurface::update(QOpenGLFunctions_4_1_Core * gl, Model &model) {
     gl->glUseProgram(0);
 }
 
-void MapSurface::update(QOpenGLFunctions_4_1_Core * gl, Light &light) {
+void MapSurface::update(QOPENGLFUNCTIONS * gl, Light &light) {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
     gl->glUniform3f(gl->glGetUniformLocation(id, "lightPos"), light.position()[0], light.position()[1], light.position()[2]);

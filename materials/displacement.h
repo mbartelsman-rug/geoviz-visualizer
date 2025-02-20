@@ -15,12 +15,12 @@ public:
     QImage toImage() const;
     void setData(QVector<float> &data, int numX, int numY);
 
-    void init(QOpenGLFunctions_4_1_Core * gl) override;
+    void init(QOPENGLFUNCTIONS * gl) override;
 
-    void update(QOpenGLFunctions_4_1_Core * gl) override;
-    void update(QOpenGLFunctions_4_1_Core * gl, Camera & camera) override;
-    void update(QOpenGLFunctions_4_1_Core * gl, Model & model) override;
-    void update(QOpenGLFunctions_4_1_Core * gl, Light & light) override;
+    void update(QOPENGLFUNCTIONS * gl) override;
+    void update(QOPENGLFUNCTIONS * gl, Camera & camera) override;
+    void update(QOPENGLFUNCTIONS * gl, Model & model) override;
+    void update(QOPENGLFUNCTIONS * gl, Light & light) override;
 
     QOpenGLShaderProgram * program() override;
 
@@ -41,11 +41,15 @@ private:
     QVector<float> *dst;
 
     void computeDistanceTransform();
+    void setTexture(QOPENGLFUNCTIONS *gl, QVector<float> &data, int idx);
     static QImage getQImage(QVector<float> &data, int numX, int numY, bool scale);
+
+
 
     QOpenGLShaderProgram m_program;
 
     GLuint textureID, dstID;
+    GLuint textures[2];
 };
 
 

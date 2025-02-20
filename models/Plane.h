@@ -21,9 +21,9 @@ public:
 
     QMatrix4x4 & modelMatrix() override;
 
-    void init(QOpenGLFunctions_4_1_Core * gl) override;
-    void update(QOpenGLFunctions_4_1_Core * gl) override;
-    void render(QOpenGLFunctions_4_1_Core * gl) override;
+    void init(QOPENGLFUNCTIONS * gl) override;
+    void update(QOPENGLFUNCTIONS * gl) override;
+    void render(QOPENGLFUNCTIONS * gl) override;
 };
 
 

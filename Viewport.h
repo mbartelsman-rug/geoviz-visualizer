@@ -35,7 +35,7 @@ protected:
 private:
     Settings settings;
 
-    QOpenGLFunctions_4_1_Core * gl { nullptr };
+    QOPENGLFUNCTIONS * gl { nullptr };
     Scene * scene { nullptr };
 
     Qt::MouseButtons m_mouseButtons { Qt::NoButton };

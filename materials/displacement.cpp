@@ -183,7 +183,7 @@ void Displacement::computeDistanceTransform()
     qDebug() << "...Done";
 }
 
-void Displacement::init(QOpenGLFunctions_4_1_Core *gl)
+void Displacement::init(QOPENGLFUNCTIONS *gl)
 {
     program()->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/materials/Displacement.vert");
     program()->addShaderFromSourceFile(QOpenGLShader::TessellationControl, ":/materials/Displacement.tesc");
@@ -197,7 +197,7 @@ void Displacement::init(QOpenGLFunctions_4_1_Core *gl)
     }
 }
 
-void Displacement::update(QOpenGLFunctions_4_1_Core *gl)
+void Displacement::update(QOPENGLFUNCTIONS *gl)
 {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
@@ -210,37 +210,50 @@ void Displacement::update(QOpenGLFunctions_4_1_Core *gl)
     gl->glUniform1f(gl->glGetUniformLocation(id, "shininess"), shininess);
 
     // Displacement
-    gl->glEnable(GL_TEXTURE_2D);                   // Enable texturing
-
-    gl->glGenTextures(1, &textureID);
-    gl->glGenTextures(1, &dstID);
-
-    gl->glActiveTexture(GL_TEXTURE0 + 0);
-    gl->glBindTexture(GL_TEXTURE_2D, textureID); // Set as the current texture
-
-    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D,0,GL_R32F,numX, numY,0,GL_RED,GL_FLOAT,data->data());
-
-    // Distance transform texture
-    gl->glActiveTexture(GL_TEXTURE0 + 1);
-    gl->glBindTexture(GL_TEXTURE_2D, dstID);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_R32F,numX, numY,0,GL_RED,GL_FLOAT,dst->data());
-
-    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    gl->glEnable(GL_TEXTURE_2D);
 
 
-    gl->glDisable(GL_TEXTURE_2D);
+    gl->glCreateTextures(GL_TEXTURE_2D, 1, &textures[0]);
+
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
+
+    // Store the two textures next to each other
+
+    gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 2*numX, numY, 0, GL_RED, GL_FLOAT, NULL);
+    gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, numX, numY, GL_RED, GL_FLOAT, data->data());
+    gl->glTexSubImage2D(GL_TEXTURE_2D, 0, numX, 0, numX, numY, GL_RED, GL_FLOAT, dst->data());
+
+    gl->glBindTextureUnit(0, textures[0]);
+
     gl->glUseProgram(0);
 }
 
-void Displacement::update(QOpenGLFunctions_4_1_Core *gl, Camera &camera)
+void Displacement::setTexture(QOPENGLFUNCTIONS *gl, QVector<float> &arr, int idx){
+    qDebug() << "Setting texture " << idx;
+
+    gl->glCreateTextures(GL_TEXTURE_2D, 1, &textures[idx]);
+
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
+
+
+    gl->glTextureStorage2D(textures[idx], 1, GL_R32F, numX,numY);
+    gl->glTextureSubImage2D(textures[idx], 0, 0,0, numX,numY, GL_RED, GL_FLOAT, arr.data());
+
+    //gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, numX, numY, 0, GL_RED, GL_FLOAT, arr.data());
+
+    gl->glBindTextureUnit(idx, textures[idx]);
+}
+
+
+void Displacement::update(QOPENGLFUNCTIONS *gl, Camera &camera)
 {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
@@ -251,7 +264,7 @@ void Displacement::update(QOpenGLFunctions_4_1_Core *gl, Camera &camera)
     gl->glUseProgram(0);
 }
 
-void Displacement::update(QOpenGLFunctions_4_1_Core *gl, Model &model)
+void Displacement::update(QOPENGLFUNCTIONS *gl, Model &model)
 {
     GLuint id = program()->programId();
     gl->glUseProgram(id);
@@ -260,7 +273,7 @@ void Displacement::update(QOpenGLFunctions_4_1_Core *gl, Model &model)
     gl->glUseProgram(0);
 }
 
-void Displacement::update(QOpenGLFunctions_4_1_Core *gl, Light &light)
+void Displacement::update(QOPENGLFUNCTIONS *gl, Light &light)
 {
     GLuint id = program()->programId();
     gl->glUseProgram(id);

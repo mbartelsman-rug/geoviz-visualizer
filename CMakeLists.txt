@@ -58,6 +58,7 @@ set(PROJECT_SOURCES
         initializer/demloader.cpp
         materials/displacement.cpp
         materials/displacement.h
+        openglfunction.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

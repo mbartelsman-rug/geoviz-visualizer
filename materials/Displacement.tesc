@@ -1,4 +1,4 @@
-#version 420
+#version 460
 // Tesselation Control Shader (TCS)
 layout(vertices = 4) out;
 
