@@ -68,39 +68,12 @@ void main() {
         } else { // normal water
             color = vec3(0.6, 0.6, 1);
         }
-/*
-
-        //length = uv_fr.r;
-
-        //float d = max(30, int(length / 5)); // Line distance becomes larger with larger distances
-        int bin_size = 100;
-        float alpha = 1.1;
-        float d = int(length / bin_size) * bin_size * alpha; // Divide into bins
-        float thickness = 10;
-
-        // waterline
-        if (length < thickness || length - floor(length / d) * d < thickness * alpha){
-            color = vec3(0, 0, 0.8);
-        } else { // normal water
-            color = vec3(0.6, 0.6, 1);
-        }*/
     } else {
         float max_value_color = 1000.0; // TODO make uniform
 
         color = vec3(0, 0.3, 0);
         color.g += min(value / max_value_color, 1.0) * (1 - color.g);
     }
-
-/*
-    // TODO remove
-    color = texture(dst, uv_fr).rrr;
-    if (texture(dst, uv_fr).r > 0) {
-        color = vec3(0, 1, 0);
-    }
-
-*/
-
-
 
     color_out = vec4(color, 1);
 }
