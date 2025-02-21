@@ -24,22 +24,16 @@ MessageCallback( GLenum source,
 }
 
 
-Viewport::Viewport(QWidget * parent) : QOpenGLWidget(parent) {
+Viewport::Viewport(QWidget * parent) : QOpenGLWidget(parent), scene( new Scene() ) {
 }
 
 Viewport::~Viewport() = default;
 
-void Viewport::initializeGL() {
-    QOpenGLWidget::initializeGL();
+void Viewport::initScene()
+{
+    if (!isGlInitialized) { return; }
+
     makeCurrent();
-    gl = QOpenGLVersionFunctionsFactory::get<QOPENGLFUNCTIONS>(context());
-
-    // enable debug output
-    gl->glEnable              ( GL_DEBUG_OUTPUT );
-    gl->glDebugMessageCallback( MessageCallback, 0 );
-
-    scene = new Scene();
-
     for (auto & material : scene->materials) {
         material->init(gl);
         material->update(gl);
@@ -50,10 +44,22 @@ void Viewport::initializeGL() {
         model->update(gl);
     }
 
-
     updateCamera();
     updateLight();
     updateModels();
+}
+
+void Viewport::initializeGL() {
+    QOpenGLWidget::initializeGL();
+    makeCurrent();
+    gl = QOpenGLVersionFunctionsFactory::get<QOPENGLFUNCTIONS>(context());
+    isGlInitialized = true;
+
+    // enable debug output
+    gl->glEnable              ( GL_DEBUG_OUTPUT );
+    gl->glDebugMessageCallback( MessageCallback, 0 );
+
+    initScene();
 }
 
 void Viewport::resizeGL(const int w, const int h) {

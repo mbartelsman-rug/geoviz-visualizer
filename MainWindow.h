@@ -22,5 +22,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    void loadFile(QString fileName);
 };
 #endif // MAINWINDOW_H

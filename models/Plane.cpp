@@ -79,7 +79,7 @@ void Plane::render(QOPENGLFUNCTIONS * gl) {
     gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indices);
 
     gl->glPatchParameteri(GL_PATCH_VERTICES, 4);
-    gl->glDrawElements(GL_PATCHES, 4, GL_UNSIGNED_INT, nullptr);
+    gl->glDrawElements(GL_QUADS, 1, GL_UNSIGNED_INT, nullptr);
     gl->glBindVertexArray(0);
     gl->glUseProgram(0);
 }

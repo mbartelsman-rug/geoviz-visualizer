@@ -15,7 +15,8 @@ public:
     explicit Viewport(QWidget * parent);
     ~Viewport() override;
 
-    inline Scene *getScene () const {return scene; };
+    inline Scene *getScene () const { return scene; };
+    void initScene();
 
 protected:
     void initializeGL() override;
@@ -33,6 +34,7 @@ protected:
     void updateModels();
 
 private:
+    bool isGlInitialized { false };
     Settings settings;
 
     QOPENGLFUNCTIONS * gl { nullptr };
