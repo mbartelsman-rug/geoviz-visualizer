@@ -19,6 +19,9 @@ public:
 
     void loadDem(QString &filename);
 
+    Settings settings;
+
+    friend class MainWindow;
 protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
@@ -35,8 +38,6 @@ protected:
     void updateModels();
 
 private:
-    Settings settings;
-
     QOPENGLFUNCTIONS * gl { nullptr };
     Scene * scene { nullptr };
 

@@ -27,6 +27,10 @@ uniform mat3 modelNormalMatrix;
 uniform mat3 viewNormalMatrix;
 uniform vec3 lightPos;
 
+// Waterlining
+uniform float s;
+uniform float e;
+
 uniform sampler2D txt;
 
 float get_terrain(float u, float v){
@@ -52,17 +56,34 @@ void main() {
     if (height == 0.0){
         float length = get_dmap(u, v);
 
+        float d = length;
+        float h = 0;
+
+        float thickness = 0.01;
+
+        float phi = pow(floor(pow(s * d, e) + h), 1.0 / e) / s; 
+        
+        if (d - phi < thickness){
+            color = vec3(0, 0, 0.8);
+        } else { // normal water
+            color = vec3(0.6, 0.6, 1);
+        }
+/*
+
         //length = uv_fr.r;
 
-        float num = 50;
+        //float d = max(30, int(length / 5)); // Line distance becomes larger with larger distances
+        int bin_size = 100;
+        float alpha = 1.1;
+        float d = int(length / bin_size) * bin_size * alpha; // Divide into bins
         float thickness = 10;
 
         // waterline
-        if (floor(length / num) != 0 && length - floor(length / num) * num < thickness){
+        if (length < thickness || length - floor(length / d) * d < thickness * alpha){
             color = vec3(0, 0, 0.8);
         } else { // normal water
-            color = vec3(0.5, 0.5, 1);
-        }
+            color = vec3(0.6, 0.6, 1);
+        }*/
     } else {
         float max_value_color = 1000.0; // TODO make uniform
 

@@ -4,6 +4,7 @@
 
 #include <qlist.h>
 
+#include "Settings.h"
 #include "cameras/PerspectiveCamera.h"
 #include "lights/Light.h"
 #include "materials/Phong.h"
@@ -13,7 +14,9 @@
 class Mesh;
 
 struct Scene {
-    Scene();
+    Scene(Settings *settings);
+
+    Settings *settings;
 
     Camera * camera { new PerspectiveCamera() };
     Light * light { new Light() };

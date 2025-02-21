@@ -6,6 +6,9 @@
 
 struct Settings {
     bool wireFrameMode = false;
+
+    double s = 30;
+    double e = 0.75;
 };
 
 

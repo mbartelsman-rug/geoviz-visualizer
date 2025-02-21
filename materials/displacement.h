@@ -1,6 +1,7 @@
 #ifndef DISPLACEMENT_H
 #define DISPLACEMENT_H
 
+#include "Settings.h"
 #include "materials/Material.h"
 #include <QVector>
 #include <qimage.h>
@@ -9,7 +10,7 @@
 
 class Displacement: public Material {
 public:
-    Displacement();
+    Displacement(Settings *settings);
     ~Displacement();
 
     QImage toImage() const;
@@ -35,18 +36,20 @@ public:
 
 
 private:
+    Settings *settings;
+
     QVector<float> *data;
     int numX = 0;
     int numY = 0;
     QVector<float> *dst;
 
-    void computeDistanceTransform();
+    void computeDistanceTransform(bool rescale);
     void setTexture(QOPENGLFUNCTIONS *gl, QVector<float> &data, int idx);
     static QImage getQImage(QVector<float> &data, int numX, int numY, bool scale);
 
-
-
     QOpenGLShaderProgram m_program;
+
+    bool textureChanged = false;
 
     GLuint textureID, dstID;
     GLuint texture;

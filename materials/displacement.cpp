@@ -35,8 +35,10 @@ QImage Displacement::getQImage(QVector<float> &data, int numX, int numY, bool sc
     return image;
 }
 
-Displacement::Displacement()
+Displacement::Displacement(Settings *settings)
 {
+    this->settings = settings;
+
     this->data = new QVector<float>();
     this->dst = new QVector<float>();
 }
@@ -56,10 +58,12 @@ void Displacement::setData(QVector<float> &newData, int numX, int numY)
     this->numX = numX;
     this->numY = numY;
 
-    computeDistanceTransform();
+    computeDistanceTransform(true);
+
+    textureChanged = true;
 }
 
-void Displacement::computeDistanceTransform()
+void Displacement::computeDistanceTransform(bool rescale = false)
 {
     // MRH Distance transform by Meijster et al.
     // Based on Image Processing slides
@@ -185,6 +189,13 @@ void Displacement::computeDistanceTransform()
         }
     }
     qDebug() << "...Done";
+
+    if (rescale){
+        float max = std::max_element(dst->cbegin(), dst->cend())[0];
+        for(float &elem: *dst){
+            elem /= max;
+        }
+    }
 }
 
 void Displacement::init(QOPENGLFUNCTIONS *gl)
@@ -216,6 +227,14 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glUniform1f(gl->glGetUniformLocation(id, "ambientCoefficient"), ambientCoefficient);
     gl->glUniform1f(gl->glGetUniformLocation(id, "shininess"), shininess);
 
+    gl->glUniform1f(gl->glGetUniformLocation(id, "s"), settings->s);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "e"), settings->e);
+
+
+    if (!textureChanged){
+        return;
+    }
+    // Update textures
     // Displacement
     gl->glGenTextures(1, &texture);
     gl->glBindTexture(GL_TEXTURE_2D, texture);
@@ -230,6 +249,8 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 2*numX, numY, 0, GL_RED, GL_FLOAT, NULL);
     gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, numX, numY, GL_RED, GL_FLOAT, data->data());
     gl->glTexSubImage2D(GL_TEXTURE_2D, 0, numX, 0, numX, numY, GL_RED, GL_FLOAT, dst->data());
+
+    textureChanged = false;
 
     gl->glUseProgram(0);
 }

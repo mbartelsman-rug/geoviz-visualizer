@@ -6,9 +6,11 @@
 #include "models/Plane.h"
 #include "models/Terrain.h"
 
-Scene::Scene()
+Scene::Scene(Settings *settings)
 {
-    displacement = new Displacement();
+    this->settings = settings;
+
+    displacement = new Displacement(settings);
 
     materials.append(displacement);
 

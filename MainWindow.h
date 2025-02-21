@@ -19,6 +19,8 @@ public:
 
 private slots:
     void on_loadMeshButton_clicked();
+    void on_spinbox_s_valueChanged(double value);
+    void on_spinbox_e_valueChanged(double value);
 
 private:
     Ui::MainWindow *ui;

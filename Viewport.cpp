@@ -47,7 +47,7 @@ void Viewport::initializeGL() {
     gl->glEnable              ( GL_DEBUG_OUTPUT );
     gl->glDebugMessageCallback( MessageCallback, 0 );
 
-    scene = new Scene();
+    scene = new Scene(&settings);
 
     for (auto & material : scene->materials) {
         material->init(gl);

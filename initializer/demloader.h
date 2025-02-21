@@ -8,14 +8,10 @@
 
 #include <gdal_priv.h>
 
-#include "materials/displacement.h"
-
 class DemLoader {
 public:
     DemLoader(const QString& fileName);
     ~DemLoader();
-
-    Displacement* getDisplacement();
 
     inline QVector<float> &getData() { return data;};
     inline int &getNBlockXSize() {return nBlockXSize; };

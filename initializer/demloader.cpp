@@ -88,11 +88,3 @@ DemLoader::DemLoader(const QString& fileName){
 DemLoader::~DemLoader(){
     // TODO
 }
-
-
-Displacement *DemLoader::getDisplacement(){
-    Displacement *disp = new Displacement();
-    disp->setData(data, nBlockXSize, nBlockYSize);
-
-    return disp;
-}
