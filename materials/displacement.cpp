@@ -67,7 +67,6 @@ void Displacement::computeDistanceTransform()
     qDebug() << "Calculating distance transform...";
 
     QVector<float> g(numX * numY);
-    //QVector<float> dst = QVector<float>(numX * numY);
     dst->resize(numX * numY);
 
     const float inf = numX + numY;
@@ -164,11 +163,6 @@ void Displacement::computeDistanceTransform()
             {
                 int w = 1 + sep(s[q], u, y);
 
-                if (y == 244){
-                    int w2 = sep(s[q], u, y);
-                    qDebug() << "u q w sep" << u << q << w << w2;
-                }
-
                 if (w < numX)
                 {
                     q = q + 1;
@@ -183,10 +177,6 @@ void Displacement::computeDistanceTransform()
         {
             float pixelValue = sqrt(f(u, s[q], y));
 
-            if (u == 0 && pixelValue > 2000){// TODO REMOVE
-                qDebug() << "y val" << y << pixelValue;
-            }
-
             setPxl(*dst, u, y, pixelValue);
             if (u == t[q])
             {
@@ -195,8 +185,6 @@ void Displacement::computeDistanceTransform()
         }
     }
     qDebug() << "...Done";
-    getQImage(*data, numX, numY, true).save("/home/bob/Documents2/Uni/GeoVisualization/project/geoviz-visualizer/data/data.png");
-    getQImage(*dst, numX, numY, true).save("/home/bob/Documents2/Uni/GeoVisualization/project/geoviz-visualizer/data/dst2.png");
 }
 
 void Displacement::init(QOPENGLFUNCTIONS *gl)
@@ -211,6 +199,9 @@ void Displacement::init(QOPENGLFUNCTIONS *gl)
         qWarning() << "Displacement::init: program is not linked:\n"
                    << program()->log();
     }
+
+    // Enable texturing
+    gl->glEnable(GL_TEXTURE_2D);
 }
 
 void Displacement::update(QOPENGLFUNCTIONS *gl)
@@ -226,9 +217,8 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glUniform1f(gl->glGetUniformLocation(id, "shininess"), shininess);
 
     // Displacement
-    gl->glEnable(GL_TEXTURE_2D);
-
-    gl->glCreateTextures(GL_TEXTURE_2D, 1, &textures[0]);
+    gl->glGenTextures(1, &texture);
+    gl->glBindTexture(GL_TEXTURE_2D, texture);
 
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -236,18 +226,17 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     gl->glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
 
-    // Store the two textures next to each other
-
+    // Store the two textures next to each other (annoying because of bleeding)
     gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 2*numX, numY, 0, GL_RED, GL_FLOAT, NULL);
     gl->glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, numX, numY, GL_RED, GL_FLOAT, data->data());
     gl->glTexSubImage2D(GL_TEXTURE_2D, 0, numX, 0, numX, numY, GL_RED, GL_FLOAT, dst->data());
-
-    gl->glBindTextureUnit(0, textures[0]);
 
     gl->glUseProgram(0);
 }
 
 void Displacement::setTexture(QOPENGLFUNCTIONS *gl, QVector<float> &arr, int idx){
+    // UNUSED
+/*
     qDebug() << "Setting texture " << idx;
 
     gl->glCreateTextures(GL_TEXTURE_2D, 1, &textures[idx]);
@@ -264,7 +253,7 @@ void Displacement::setTexture(QOPENGLFUNCTIONS *gl, QVector<float> &arr, int idx
 
     //gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, numX, numY, 0, GL_RED, GL_FLOAT, arr.data());
 
-    gl->glBindTextureUnit(idx, textures[idx]);
+    gl->glBindTextureUnit(idx, textures[idx]);*/
 }
 
 

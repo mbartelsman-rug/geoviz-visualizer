@@ -6,6 +6,7 @@
 #include <QTimer>
 
 #include "Scene.h"
+#include "initializer/demloader.h"
 #include "materials/Material.h"
 #include "openglfunction.h"
 
@@ -29,6 +30,14 @@ Viewport::Viewport(QWidget * parent) : QOpenGLWidget(parent) {
 
 Viewport::~Viewport() = default;
 
+void Viewport::loadDem(QString &filename){
+    DemLoader demLoader(filename);
+
+    scene->displacement->setData(demLoader.getData(), demLoader.getNBlockXSize(), demLoader.getNBlockYSize());
+
+    updateModels();
+}
+
 void Viewport::initializeGL() {
     QOpenGLWidget::initializeGL();
     makeCurrent();
@@ -49,7 +58,6 @@ void Viewport::initializeGL() {
         model->init(gl);
         model->update(gl);
     }
-
 
     updateCamera();
     updateLight();
@@ -174,10 +182,12 @@ void Viewport::updateLight() {
 }
 
 void Viewport::updateModels() {
-    makeCurrent();
+    makeCurrent(); 
+
     for (auto & model : scene->models) {
         model->update(gl);
         model->material()->update(gl, *model);
+        model->material()->update(gl);
     }
     update();
 }

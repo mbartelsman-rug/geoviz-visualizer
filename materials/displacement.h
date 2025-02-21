@@ -49,7 +49,7 @@ private:
     QOpenGLShaderProgram m_program;
 
     GLuint textureID, dstID;
-    GLuint textures[2];
+    GLuint texture;
 };
 
 

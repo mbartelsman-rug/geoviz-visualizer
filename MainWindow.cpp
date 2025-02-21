@@ -19,20 +19,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_loadMeshButton_clicked()
 {
-    QString selected_file = QFileDialog::getOpenFileName(this, "Open mesh file...", {}, "Wavefront files (*.dem)");
+    QString selected_file = QFileDialog::getOpenFileName(this, "Open .dem file...", {}, "Wavefront files (*.dem)");
 
     if (selected_file.isEmpty())
         return;
 
-    DemLoader demLoader(selected_file);
-
-    Displacement *dismap = demLoader.getDisplacement();
-
-    // TODO
-
-    // ui->viewport->loadMesh(selected_file);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    ui->viewport->loadDem(selected_file);
+    QApplication::restoreOverrideCursor(); // for restoring
 
     ui->viewport->update();
-
 }
 

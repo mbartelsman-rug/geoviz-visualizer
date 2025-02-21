@@ -17,6 +17,8 @@ public:
 
     inline Scene *getScene () const {return scene; };
 
+    void loadDem(QString &filename);
+
 protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;

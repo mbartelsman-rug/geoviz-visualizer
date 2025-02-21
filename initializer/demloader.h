@@ -17,10 +17,16 @@ public:
 
     Displacement* getDisplacement();
 
+    inline QVector<float> &getData() { return data;};
+    inline int &getNBlockXSize() {return nBlockXSize; };
+    inline int &getNBlockYSize() {return nBlockYSize; };
+
 private:
     QString fileName;
     GDALDatasetUniquePtr poDataset;
 
+    QVector<float> data;
+    int nBlockXSize, nBlockYSize;
 
 };
 

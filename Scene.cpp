@@ -8,13 +8,11 @@
 
 Scene::Scene()
 {
-    // TODO un hardcode file
-    DemLoader demLoader("../../data/6702_1_10m_z32.dem");
-    Displacement *dismap = demLoader.getDisplacement();
+    displacement = new Displacement();
 
-    materials.append(dismap);
+    materials.append(displacement);
 
-    Plane *plane = new Plane(dismap);
+    Plane *plane = new Plane(displacement);
     models.push_back(plane);
 
     //Plane *plane = new Plane(map);

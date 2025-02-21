@@ -7,15 +7,8 @@
 
 DemLoader::DemLoader(const QString& fileName){
     this->fileName = fileName;
-}
 
-DemLoader::~DemLoader(){
-    // TODO
-}
-
-
-Displacement *DemLoader::getDisplacement(){
-    GDALAllRegister(); 
+    GDALAllRegister();
 
     const GDALAccess eAccess = GA_ReadOnly;
     poDataset = GDALDatasetUniquePtr(GDALDataset::FromHandle(GDALOpen(fileName.toLocal8Bit().data(), eAccess)));
@@ -46,7 +39,7 @@ Displacement *DemLoader::getDisplacement(){
      * Fetch raster band
      */
     GDALRasterBand  *poBand;
-    int             nBlockXSize, nBlockYSize;
+    //int             nBlockXSize, nBlockYSize;
     int             bGotMin, bGotMax;
     double          adfMinMax[2];
     poBand = poDataset->GetRasterBand( 1 );
@@ -75,7 +68,7 @@ Displacement *DemLoader::getDisplacement(){
     float *pafScanline;
     int   nXSize = poBand->GetXSize();
     pafScanline = (float *) CPLMalloc(sizeof(float)*nXSize);
-    QVector<float> data;
+    //QVector<float> data;
 
     for(int x = 0; x < nBlockXSize; x++ ){
         CPLErr readErr = poBand->RasterIO( GF_Read, 0, x, nXSize, 1,
@@ -90,6 +83,14 @@ Displacement *DemLoader::getDisplacement(){
         }
     }
 
+}
+
+DemLoader::~DemLoader(){
+    // TODO
+}
+
+
+Displacement *DemLoader::getDisplacement(){
     Displacement *disp = new Displacement();
     disp->setData(data, nBlockXSize, nBlockYSize);
 

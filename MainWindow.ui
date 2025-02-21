@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -75,7 +75,7 @@
      <item row="0" column="0">
       <widget class="QPushButton" name="loadMeshButton">
        <property name="text">
-        <string>Load mesh</string>
+        <string>Load DEM</string>
        </property>
       </widget>
      </item>
