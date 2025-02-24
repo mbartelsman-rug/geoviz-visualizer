@@ -28,10 +28,15 @@ uniform mat3 viewNormalMatrix;
 uniform vec3 lightPos;
 
 // Waterlining
-uniform float s;
-uniform float e;
+uniform int method;
+uniform float vertical_scale;
+uniform float waterline_space;
+uniform float waterline_exponent;
+uniform float waterline_thickness;
 
 uniform sampler2D txt;
+
+const vec3 cameraPos = vec3(0.0);
 
 float get_terrain(float u, float v){
     return texture(txt, vec2(u/2,v)).r;
@@ -41,38 +46,55 @@ float get_dmap(float u, float v){
     return texture(txt, vec2(0.5 + u/2,v)).r;
 }
 
-const vec3 cameraPos = vec3(0.0);
+vec3 color_land(float value) {
+    float max_value_color = 1000.0; // TODO make uniform
+
+    vec3 color = vec3(0, 0.3, 0);
+    color.g += min(value / max_value_color, 1.0) * (1 - color.g);
+    return color;
+}
+
+vec3 waterlining(float u, float v) {
+    float length = get_dmap(u, v);
+
+    float h = 0;
+    float phi = pow(floor(pow(waterline_space * length, waterline_exponent) + h), 1.0 / waterline_exponent) / waterline_space;
+
+    vec3 color;
+    if (length - phi < waterline_thickness){
+        color = vec3(0, 0, 0.8);
+    } else { // normal water
+        color = vec3(0.6, 0.6, 1);
+    }
+
+    return color;
+}
+
+vec3 stippling(float u, float v) {
+    return vec3(1, 0, 1);
+}
+
+vec3 color_water(float u, float v) {
+    if (method == 0) {
+        return waterlining(u, v);
+    }
+    if (method == 1) {
+        return stippling(u, v);
+    }
+}
 
 void main() {
     float u = uv_fr.r;
     float v = uv_fr.g;
 
-    float scale = 0.0002; // TODO make uniform
     float value = get_terrain(u,v);
-    float height = value * scale;
+    float height = value * vertical_scale;
 
     vec3 color;
-
     if (height == 0.0){
-        float length = get_dmap(u, v);
-
-        float d = length;
-        float h = 0;
-
-        float thickness = 0.01;
-
-        float phi = pow(floor(pow(s * d, e) + h), 1.0 / e) / s; 
-        
-        if (d - phi < thickness){
-            color = vec3(0, 0, 0.8);
-        } else { // normal water
-            color = vec3(0.6, 0.6, 1);
-        }
+        color = color_water(u, v);
     } else {
-        float max_value_color = 1000.0; // TODO make uniform
-
-        color = vec3(0, 0.3, 0);
-        color.g += min(value / max_value_color, 1.0) * (1 - color.g);
+        color = color_land(value);
     }
 
     color_out = vec4(color, 1);

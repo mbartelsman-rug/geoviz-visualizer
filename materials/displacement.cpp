@@ -227,8 +227,11 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glUniform1f(gl->glGetUniformLocation(id, "ambientCoefficient"), ambientCoefficient);
     gl->glUniform1f(gl->glGetUniformLocation(id, "shininess"), shininess);
 
-    gl->glUniform1f(gl->glGetUniformLocation(id, "s"), settings->s);
-    gl->glUniform1f(gl->glGetUniformLocation(id, "e"), settings->e);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "waterline_space"), settings->s);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "waterline_exponent"), settings->e);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "waterline_thickness"), settings->t);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "vertical_scale"), settings->vertical_scale);
+    gl->glUniform1i(gl->glGetUniformLocation(id, "method"), (int)settings->method);
 
 
     if (!textureChanged){

@@ -22,6 +22,12 @@ private slots:
     void on_spinbox_s_valueChanged(double value);
     void on_spinbox_e_valueChanged(double value);
 
+    void on_tabWidget_currentChanged(int index);
+
+    void on_doubleSpinBox_valueChanged(double arg1);
+
+    void on_verticalScaleSpinBox_valueChanged(double arg1);
+
 private:
     Ui::MainWindow *ui;
 };

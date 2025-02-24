@@ -117,8 +117,8 @@ void Viewport::mouseMoveEvent(QMouseEvent *event) {
     if ((m_mouseButtons & Qt::LeftButton) && (event->buttons() & Qt::LeftButton)) {
         QPoint mouseDelta = event->pos() - m_mousePosition;
 
-        float deltaX = (float)mouseDelta.x();
-        float deltaY = (float)mouseDelta.y();
+        float deltaX = (float)mouseDelta.x() / 1.5;
+        float deltaY = (float)mouseDelta.y() / 1.5;
 
         scene->camera->orbit(deltaX, deltaY, 0);
         cameraChanged = true;
@@ -131,7 +131,7 @@ void Viewport::mouseMoveEvent(QMouseEvent *event) {
         float deltaX = -(float)mouseDelta.x();
         float deltaY = (float)mouseDelta.y();
         float length = (scene->camera->target() - scene->camera->eye()).length();
-        float factor = length / (scene->camera->scale() * (float)width());
+        float factor = length / (scene->camera->scale() * (float)width()) / 10;
 
         scene->camera->displace(deltaX * factor, deltaY * factor, 0);
         cameraChanged = true;
