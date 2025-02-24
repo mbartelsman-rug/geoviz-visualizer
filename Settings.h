@@ -17,6 +17,7 @@ struct Settings {
     double s = 30;
     double e = 0.75;
     double t = 0.01;
+    double h = 0.0;
 
     // Stippling
 };

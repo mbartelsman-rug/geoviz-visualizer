@@ -227,9 +227,10 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glUniform1f(gl->glGetUniformLocation(id, "ambientCoefficient"), ambientCoefficient);
     gl->glUniform1f(gl->glGetUniformLocation(id, "shininess"), shininess);
 
-    gl->glUniform1f(gl->glGetUniformLocation(id, "waterline_space"), settings->s);
-    gl->glUniform1f(gl->glGetUniformLocation(id, "waterline_exponent"), settings->e);
-    gl->glUniform1f(gl->glGetUniformLocation(id, "waterline_thickness"), settings->t);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "space"), settings->s);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "exponent"), settings->e);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "phase"), settings->h);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "thickness"), settings->t);
     gl->glUniform1f(gl->glGetUniformLocation(id, "vertical_scale"), settings->vertical_scale);
     gl->glUniform1i(gl->glGetUniformLocation(id, "method"), (int)settings->method);
 
@@ -242,8 +243,8 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glGenTextures(1, &texture);
     gl->glBindTexture(GL_TEXTURE_2D, texture);
 
-    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     gl->glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);

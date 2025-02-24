@@ -27,12 +27,17 @@ uniform mat3 modelNormalMatrix;
 uniform mat3 viewNormalMatrix;
 uniform vec3 lightPos;
 
-// Waterlining
 uniform int method;
 uniform float vertical_scale;
-uniform float waterline_space;
-uniform float waterline_exponent;
-uniform float waterline_thickness;
+
+// Waterlining
+uniform float space;
+uniform float exponent;
+uniform float phase;
+uniform float thickness;
+
+// Stippling
+uniform float range;
 
 uniform sampler2D txt;
 
@@ -46,6 +51,12 @@ float get_dmap(float u, float v){
     return texture(txt, vec2(0.5 + u/2,v)).r;
 }
 
+vec3 get_stipple(vec2 coords) {
+    return pow(mod(coords.x, 1.0) - 0.5, 2) + pow(mod(coords.y, 1.0) - 0.5, 2) <= pow(0.4, 2)
+        ? vec3(1)
+        : vec3(0);
+}
+
 vec3 color_land(float value) {
     float max_value_color = 1000.0; // TODO make uniform
 
@@ -54,14 +65,15 @@ vec3 color_land(float value) {
     return color;
 }
 
+float phi(float value) {
+    return pow(floor(pow(space * value, exponent) + phase) - phase, 1.0 / exponent) / space;
+}
+
 vec3 waterlining(float u, float v) {
     float length = get_dmap(u, v);
 
-    float h = 0;
-    float phi = pow(floor(pow(waterline_space * length, waterline_exponent) + h), 1.0 / waterline_exponent) / waterline_space;
-
     vec3 color;
-    if (length - phi < waterline_thickness){
+    if (length - phi(length) < thickness) {
         color = vec3(0, 0, 0.8);
     } else { // normal water
         color = vec3(0.6, 0.6, 1);
@@ -71,7 +83,17 @@ vec3 waterlining(float u, float v) {
 }
 
 vec3 stippling(float u, float v) {
-    return vec3(1, 0, 1);
+    float length = get_dmap(u, v);
+
+    if (length - phi(length) < thickness) {
+        // in range of waterline
+
+        float value = get_dmap(u, v);
+        vec2 dD = vec2(dFdx(value), dFdy(value));
+        return get_stipple((vec2(u, v) + dD) * 200);
+    }
+
+    return vec3(0);
 }
 
 vec3 color_water(float u, float v) {

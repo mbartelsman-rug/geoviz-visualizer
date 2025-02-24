@@ -46,7 +46,7 @@ void MainWindow::on_spinbox_e_valueChanged(double value){
     ui->viewport->updateModels();
 }
 
-void MainWindow::on_doubleSpinBox_valueChanged(double value) {
+void MainWindow::on_spinbox_t_valueChanged(double value) {
     ui->viewport->settings.t = value;
     ui->viewport->updateModels();
 }
@@ -54,6 +54,13 @@ void MainWindow::on_doubleSpinBox_valueChanged(double value) {
 void MainWindow::on_verticalScaleSpinBox_valueChanged(double value)
 {
     ui->viewport->settings.vertical_scale = value;
+    ui->viewport->updateModels();
+}
+
+
+void MainWindow::on_spinbox_h_valueChanged(double value)
+{
+    ui->viewport->settings.h = value;
     ui->viewport->updateModels();
 }
 

@@ -122,15 +122,15 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="label">
            <property name="text">
             <string>Line thickness</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox">
+         <item row="3" column="1">
+          <widget class="QDoubleSpinBox" name="spinbox_t">
            <property name="decimals">
             <number>4</number>
            </property>
@@ -142,6 +142,26 @@
            </property>
            <property name="value">
             <double>0.010000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="spinbox_h">
+           <property name="minimum">
+            <double>-1.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.010000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Phase shift</string>
            </property>
           </widget>
          </item>
