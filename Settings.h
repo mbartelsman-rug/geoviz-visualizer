@@ -3,7 +3,7 @@
 #define SETTINGS_H
 
 enum class Method {
-    Waterlining, Stippling
+    Flat, Waterlining, Stippling
 };
 
 struct Settings {

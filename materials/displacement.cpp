@@ -2,14 +2,10 @@
 #include <qdir.h>
 #include <qopenglshaderprogram.h>
 #include <qpixmap.h>
-#include "omp.h"
-#include <QChronoTimer>
 
 #include "cameras/Camera.h"
 #include "lights/Light.h"
 #include "models/Model.h"
-
-using namespace std::chrono;
 
 QImage Displacement::getQImage(QVector<float> &data, int numX, int numY, bool scale = false)
 {
@@ -73,9 +69,6 @@ void Displacement::computeDistanceTransform(bool rescale = false)
     // Based on Image Processing slides
 
     qDebug() << "Calculating distance transform...";
-    auto t_start = high_resolution_clock::now();
-    //omp_set_num_threads(0); // Use all cores
-
     QVector<float> g(numX * numY);
     dst->resize(numX * numY);
 
@@ -145,8 +138,6 @@ void Displacement::computeDistanceTransform(bool rescale = false)
         }
     }
 
-
-
     // Second phase
     #pragma omp parallel for
     for (int y = 0; y < numY; y++)
@@ -195,9 +186,7 @@ void Displacement::computeDistanceTransform(bool rescale = false)
             }
         }
     }
-    auto t_end = high_resolution_clock::now();
-    auto time = duration_cast<milliseconds>(t_end - t_start);
-    qDebug() << "...Done in " << time;
+    qDebug() << "...Done";
 
     if (rescale){
         float max = std::max_element(dst->cbegin(), dst->cend())[0];

@@ -68,7 +68,7 @@ DemLoader::DemLoader(const QString& fileName){
     float *pafScanline;
     int   nXSize = poBand->GetXSize();
     pafScanline = (float *) CPLMalloc(sizeof(float)*nXSize);
-    //QVector<float> data;
+    data.reserve(nBlockXSize * nBlockYSize);
 
     for(int x = 0; x < nBlockXSize; x++ ){
         CPLErr readErr = poBand->RasterIO( GF_Read, 0, x, nXSize, 1,
@@ -77,14 +77,12 @@ DemLoader::DemLoader(const QString& fileName){
         if(readErr){
             qDebug() << "Read error!" << readErr;
         }
-
-        for(int y = 0; y < nBlockYSize; y++){
-            data.push_back(pafScanline[y]);
-        }
+        std::copy(&pafScanline[0], &pafScanline[nBlockYSize], std::back_inserter(data));
     }
 
 }
 
 DemLoader::~DemLoader(){
-    // TODO
+    data.clear();
+    data.squeeze();
 }

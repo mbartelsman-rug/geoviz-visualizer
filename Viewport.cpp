@@ -10,6 +10,8 @@
 #include "materials/Material.h"
 #include "openglfunction.h"
 
+using namespace std::chrono;
+
 void GLAPIENTRY
 MessageCallback( GLenum source,
                 GLenum type,
@@ -31,11 +33,17 @@ Viewport::Viewport(QWidget * parent) : QOpenGLWidget(parent) {
 Viewport::~Viewport() = default;
 
 void Viewport::loadDem(QString &filename){
+    auto t_start = high_resolution_clock::now();
+
     DemLoader demLoader(filename);
 
     scene->displacement->setData(demLoader.getData(), demLoader.getNBlockXSize(), demLoader.getNBlockYSize());
 
     updateModels();
+
+    auto t_end = high_resolution_clock::now();
+    auto time = duration_cast<milliseconds>(t_end - t_start);
+    qDebug() << "Loaded model in " << time;
 }
 
 void Viewport::initializeGL() {

@@ -42,6 +42,8 @@ uniform float range;
 uniform sampler2D txt;
 
 const vec3 cameraPos = vec3(0.0);
+const vec3 waterColor = vec3(0.6, 0.6, 1);
+const vec3 waterLineColor = vec3(0, 0, 0.8);
 
 float get_terrain(float u, float v){
     return texture(txt, vec2(u/2,v)).r;
@@ -69,14 +71,18 @@ float phi(float value) {
     return pow(floor(pow(space * value, exponent) + phase) - phase, 1.0 / exponent) / space;
 }
 
+vec3 water_flat() {
+    return waterColor;
+}
+
 vec3 waterlining(float u, float v) {
     float length = get_dmap(u, v);
 
     vec3 color;
     if (length - phi(length) < thickness) {
-        color = vec3(0, 0, 0.8);
-    } else { // normal water
-        color = vec3(0.6, 0.6, 1);
+        color = waterLineColor;
+    } else {
+        color = waterColor;
     }
 
     return color;
@@ -97,10 +103,20 @@ vec3 stippling(float u, float v) {
 }
 
 vec3 color_water(float u, float v) {
-    if (method == 0) {
+    switch (method) {
+        case 0:
+            return water_flat();
+        case 1:
+            return waterlining(u, v);
+        case 2:
+            return stippling(u,v);
+    }
+
+
+    if (method == 1) {
         return waterlining(u, v);
     }
-    if (method == 1) {
+    if (method == 2) {
         return stippling(u, v);
     }
 }
