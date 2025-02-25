@@ -2,10 +2,14 @@
 #include <qdir.h>
 #include <qopenglshaderprogram.h>
 #include <qpixmap.h>
+#include "omp.h"
+#include <QChronoTimer>
 
 #include "cameras/Camera.h"
 #include "lights/Light.h"
 #include "models/Model.h"
+
+using namespace std::chrono;
 
 QImage Displacement::getQImage(QVector<float> &data, int numX, int numY, bool scale = false)
 {
@@ -69,6 +73,8 @@ void Displacement::computeDistanceTransform(bool rescale = false)
     // Based on Image Processing slides
 
     qDebug() << "Calculating distance transform...";
+    auto t_start = high_resolution_clock::now();
+    //omp_set_num_threads(0); // Use all cores
 
     QVector<float> g(numX * numY);
     dst->resize(numX * numY);
@@ -104,6 +110,7 @@ void Displacement::computeDistanceTransform(bool rescale = false)
     };
 
     // First phase
+    #pragma omp parallel for
     for (int x = 0; x < numX; x++)
     {
         // Scan 1
@@ -138,17 +145,17 @@ void Displacement::computeDistanceTransform(bool rescale = false)
         }
     }
 
-    QVector<double> s = {0};
-    s.resize(numX);
 
-    QVector<double> t = {0};
-    t.resize(numX);
 
     // Second phase
+    #pragma omp parallel for
     for (int y = 0; y < numY; y++)
     {
         int q = 0;
+        QVector<double> s(numX);
         s[0] = 0;
+
+        QVector<double> t(numX);
         t[0] = 0;
 
         // Scan 3
@@ -188,7 +195,9 @@ void Displacement::computeDistanceTransform(bool rescale = false)
             }
         }
     }
-    qDebug() << "...Done";
+    auto t_end = high_resolution_clock::now();
+    auto time = duration_cast<milliseconds>(t_end - t_start);
+    qDebug() << "...Done in " << time;
 
     if (rescale){
         float max = std::max_element(dst->cbegin(), dst->cend())[0];
