@@ -117,11 +117,10 @@ float snoise(vec3 v);
 vec3 contourHatching(float u, float v) {
     float d = get_dmap(u, v);
     float d_i = 1-d;
-    float r1 = snoise(vec3(c_mult1 * d, c_mult2 * vec2(u, v))) * c_density;
-    float r2 = snoise(c_mult2 * pow(d_i, c_exponent) * vec2(u, v));
+    float r1 = snoise(vec3(c_mult1 * d, c_mult2 * vec2(u, v))) / 2 + 0.5;
 
     float calculated = pow(d_i, c_exponent) * r1;
-    if (calculated < 0.5) {
+    if (calculated < 1 - c_density) {
         return waterColor;
     }
     return vec3(0, 0, 0);
