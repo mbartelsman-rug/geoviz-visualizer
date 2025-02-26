@@ -180,7 +180,7 @@
            <x>10</x>
            <y>10</y>
            <width>181</width>
-           <height>92</height>
+           <height>147</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout">
@@ -232,6 +232,26 @@
             </property>
             <property name="value">
              <double>5.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="cDensitySpinBox">
+            <property name="maximum">
+             <double>100.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+            <property name="value">
+             <double>2.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>density</string>
             </property>
            </widget>
           </item>

@@ -83,6 +83,12 @@ void MainWindow::on_cExponentSpinBox_valueChanged(double value)
     ui->viewport->updateModels();
 }
 
+void MainWindow::on_cDensitySpinBox_valueChanged(double value)
+{
+    ui->viewport->settings.c_density = value;
+    ui->viewport->updateModels();
+}
+
 void MainWindow::on_saveImageButton_clicked() {
     ui->viewport->grab().save("../../screenshots/" + QDateTime::currentDateTimeUtc().toString() +".png");
     qDebug() << "Saved screenshot";

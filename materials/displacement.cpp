@@ -236,6 +236,7 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glUniform1i(gl->glGetUniformLocation(id, "c_mult1"), settings->c_mult1);
     gl->glUniform1i(gl->glGetUniformLocation(id, "c_mult2"), settings->c_mult2);
     gl->glUniform1f(gl->glGetUniformLocation(id, "c_exponent"), settings->c_exponent);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "c_density"), settings->c_density);
 
     if (!textureChanged){
         return;

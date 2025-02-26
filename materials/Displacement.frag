@@ -43,6 +43,8 @@ uniform float range;
 uniform int c_mult1;
 uniform int c_mult2;
 uniform float c_exponent;
+uniform float c_density;
+
 
 // Texture
 uniform sampler2D txt;
@@ -110,32 +112,15 @@ vec3 stippling(float u, float v) {
 
 // Defined in simplex.glsl
 float snoise(vec2 v);
+float snoise(vec3 v);
 
 vec3 contourHatching(float u, float v) {
-/*
-    float w_rand = 0.1;
-
-    float value = get_dmap(u,v) + w_rand * snoise(vec2(u,v));
-    float phi2 = pow(floor(pow(space * value, exponent) + phase) - phase, 1.0 / exponent) / space;
-
-    //int r2 = int(round(snoise(c_mult2 * vec2(u, v))));
-
-    if (value - phi2 < thickness) {
-        return vec3(0, 0, 0);
-    }
-    return waterColor;
-*/
-    const float c_density = 0.9;
-
-    float uv_coord =  sqrt(u*u+v*v) / sqrt(2);
-
     float d = get_dmap(u, v);
     float d_i = 1-d;
-    float r1 = round(snoise(c_mult1 * vec2(d, uv_coord)) / (1 -c_density));
+    float r1 = snoise(vec3(c_mult1 * d, c_mult2 * vec2(u, v))) * c_density;
     float r2 = snoise(c_mult2 * pow(d_i, c_exponent) * vec2(u, v));
 
-    float calculated = pow(d_i, c_exponent) * r1; // * r2;
-    //calculated = round(r2) * r1;
+    float calculated = pow(d_i, c_exponent) * r1;
     if (calculated < 0.5) {
         return waterColor;
     }

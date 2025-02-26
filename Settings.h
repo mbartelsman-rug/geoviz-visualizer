@@ -26,6 +26,7 @@ struct Settings {
     int c_mult1 = 50;
     int c_mult2 = 50;
     float c_exponent = 5;
+    float c_density = 0.9;
 };
 
 #endif //SETTINGS_H

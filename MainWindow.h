@@ -31,6 +31,7 @@ private slots:
     void on_cDistSpinBox_valueChanged(int value);
     void on_cUVSpinBox_valueChanged(int value);
     void on_cExponentSpinBox_valueChanged(double value);
+    void on_cDensitySpinBox_valueChanged(double value);
 
     void on_saveImageButton_clicked();
 private:
