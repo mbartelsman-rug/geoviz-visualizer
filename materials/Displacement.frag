@@ -127,12 +127,14 @@ vec3 contourHatching(float u, float v) {
 */
     const float c_density = 0.9;
 
+    float uv_coord =  sqrt(u*u+v*v) / sqrt(2);
+
     float d = get_dmap(u, v);
     float d_i = 1-d;
-    float r1 = round(snoise(c_mult1 * vec2(d, 0.5)) / (1 -c_density));
+    float r1 = round(snoise(c_mult1 * vec2(d, uv_coord)) / (1 -c_density));
     float r2 = snoise(c_mult2 * pow(d_i, c_exponent) * vec2(u, v));
 
-    float calculated = pow(d_i, c_exponent) * r1 * r2;
+    float calculated = pow(d_i, c_exponent) * r1; // * r2;
     //calculated = round(r2) * r1;
     if (calculated < 0.5) {
         return waterColor;
