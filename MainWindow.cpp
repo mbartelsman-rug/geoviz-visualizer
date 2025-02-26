@@ -25,7 +25,7 @@ void MainWindow::on_loadMeshButton_clicked()
         return;
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
-    ui->viewport->loadDem(selected_file);
+    ui->viewport->loadDem(selected_file, ui->statusBar);
     QApplication::restoreOverrideCursor(); // for restoring
 
     ui->viewport->update();

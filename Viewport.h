@@ -2,6 +2,7 @@
 #define VIEWPORT_H
 
 #include <QOpenGLWidget>
+#include <QStatusBar>
 
 #include "Scene.h"
 #include "Settings.h"
@@ -17,7 +18,7 @@ public:
 
     inline Scene *getScene () const {return scene; };
 
-    void loadDem(QString &filename);
+    void loadDem(QString &filename, QStatusBar * statusBar = nullptr);
 
     Settings settings;
 

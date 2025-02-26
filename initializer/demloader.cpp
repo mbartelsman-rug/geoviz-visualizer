@@ -24,6 +24,7 @@ DemLoader::DemLoader(const QString& fileName){
     qDebug() <<  "Driver: " <<
         poDataset->GetDriver()->GetDescription() <<
         poDataset->GetDriver()->GetMetadataItem( GDAL_DMD_LONGNAME ) ;
+
     qDebug() <<   "Size is " <<
         poDataset->GetRasterXSize() << poDataset->GetRasterYSize() <<
         poDataset->GetRasterCount() ;

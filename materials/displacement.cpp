@@ -203,6 +203,7 @@ void Displacement::init(QOPENGLFUNCTIONS *gl)
     program()->addShaderFromSourceFile(QOpenGLShader::TessellationEvaluation, ":/materials/Displacement.tese");
     program()->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/materials/Displacement.frag");
     program()->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/materials/simplex.glsl");
+    program()->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/materials/rand.glsl");
     program()->link();
     if (!program()->isLinked())
     {
@@ -226,12 +227,14 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glUniform1f(gl->glGetUniformLocation(id, "ambientCoefficient"), ambientCoefficient);
     gl->glUniform1f(gl->glGetUniformLocation(id, "shininess"), shininess);
 
+    gl->glUniform1f(gl->glGetUniformLocation(id, "vertical_scale"), settings->vertical_scale);
+    gl->glUniform1i(gl->glGetUniformLocation(id, "method"), (int)settings->method);
+    gl->glUniform2i(gl->glGetUniformLocation(id, "mapSize"), numX, numY);
+
     gl->glUniform1f(gl->glGetUniformLocation(id, "space"), settings->s);
     gl->glUniform1f(gl->glGetUniformLocation(id, "exponent"), settings->e);
     gl->glUniform1f(gl->glGetUniformLocation(id, "phase"), settings->h);
     gl->glUniform1f(gl->glGetUniformLocation(id, "thickness"), settings->t);
-    gl->glUniform1f(gl->glGetUniformLocation(id, "vertical_scale"), settings->vertical_scale);
-    gl->glUniform1i(gl->glGetUniformLocation(id, "method"), (int)settings->method);
 
     gl->glUniform1i(gl->glGetUniformLocation(id, "c_mult1"), settings->c_mult1);
     gl->glUniform1i(gl->glGetUniformLocation(id, "c_mult2"), settings->c_mult2);

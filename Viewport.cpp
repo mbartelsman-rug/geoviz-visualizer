@@ -1,5 +1,6 @@
 #include "Viewport.h"
 
+#include <iomanip>
 #include <QMouseEvent>
 #include <QOpenGLVersionFunctionsFactory>
 #include <QRandomGenerator>
@@ -32,18 +33,23 @@ Viewport::Viewport(QWidget * parent) : QOpenGLWidget(parent) {
 
 Viewport::~Viewport() = default;
 
-void Viewport::loadDem(QString &filename){
-    auto t_start = high_resolution_clock::now();
+void Viewport::loadDem(QString &filename, QStatusBar * statusBar){
+    if (statusBar != nullptr) statusBar->showMessage("Loading DEM...");
 
+    auto t_start = high_resolution_clock::now();
     DemLoader demLoader(filename);
 
+    if (statusBar != nullptr) statusBar->showMessage("Calculating distance transform...");
     scene->displacement->setData(demLoader.getData(), demLoader.getNBlockXSize(), demLoader.getNBlockYSize());
 
     updateModels();
 
     auto t_end = high_resolution_clock::now();
     auto time = duration_cast<milliseconds>(t_end - t_start);
-    qDebug() << "Loaded model in " << time;
+
+    QString timeInfo = QString("Loaded model in %1ms").arg(time.count());
+    qDebug() << timeInfo;
+    if (statusBar != nullptr) statusBar->showMessage(timeInfo);
 }
 
 void Viewport::initializeGL() {
@@ -75,7 +81,6 @@ void Viewport::initializeGL() {
 void Viewport::resizeGL(const int w, const int h) {
     QOpenGLWidget::resizeGL(w, h);
     makeCurrent();
-
     scene->camera->aspectRatio((float) w / (float) h);
     for (auto & material : scene->materials) {
         material->update(gl, *scene->camera);

@@ -27,6 +27,7 @@ uniform mat3 modelNormalMatrix;
 uniform mat3 viewNormalMatrix;
 uniform vec3 lightPos;
 
+uniform ivec2 mapSize;
 uniform int method;
 uniform float vertical_scale;
 
@@ -37,7 +38,6 @@ uniform float phase;
 uniform float thickness;
 
 // Stippling
-uniform float range;
 
 // Contour hatching 
 uniform int c_mult1;
@@ -62,7 +62,7 @@ float get_dmap(float u, float v){
 }
 
 vec3 get_stipple(vec2 coords) {
-    return pow(mod(coords.x, 1.0) - 0.5, 2) + pow(mod(coords.y, 1.0) - 0.5, 2) <= pow(0.4, 2)
+    return pow(coords.x - 0.5, 2) + pow(coords.y - 0.5, 2) <= pow(0.4, 2)
         ? vec3(1)
         : vec3(0);
 }
@@ -96,16 +96,44 @@ vec3 waterlining(float u, float v) {
     return color;
 }
 
+vec2 rand(vec2);
+
 vec3 stippling(float u, float v) {
-    float length = get_dmap(u, v);
+    float d = get_dmap(u, v);
+    vec2 uv = vec2(u, v) * 100;
+    vec2 cell = floor(uv);
+    vec2 offset = uv - cell;
 
-    if (length - phi(length) < thickness) {
-        // in range of waterline
-
-        float value = get_dmap(u, v);
-        vec2 dD = vec2(dFdx(value), dFdy(value));
-        return get_stipple((vec2(u, v) + dD) * 200);
+    float wlDist = d - phi(d); // [0,1]
+    if (wlDist < thickness) {
+        vec2 cellCenter = cell + vec2(0.5); // [0.5, 100.5]^2
+        float centerD = get_dmap(cellCenter.x, cellCenter.y); // [0, 1]
+        vec2 toNextWl = normalize(vec2(dFdx(centerD), dFdy(centerD)));
+        vec2 toWl = toNextWl * wlDist * 100;
+        vec3 samp = get_stipple(uv + toWl - cell);
+        if (samp != vec3(0))
+            return samp;
     }
+//
+//    vec2 randScale = vec2(0.037, 0.119);
+//    vec2 randomUV = cell * randScale;
+//    vec2 random = rand(randomUV);
+//
+//    vec3 samp = get_stipple(offset.xy - random.xy);
+//
+//    vec3 color = vec3(0);
+//    for (int i = -1; i <= 0; i++) {
+//        for (int j = -1; j <= 0; j++) {
+//            vec2 cell_t = cell + vec2(i, j);
+//            vec2 offset_t = offset - vec2(i, j);
+//            randomUV = cell_t.xy * randScale;
+//            random = rand(randomUV);
+//            samp = get_stipple(offset_t - random.xy);
+//            if (samp != vec3(0)) {
+//                color = samp;
+//            }
+//        }
+//    }
 
     return vec3(0);
 }

@@ -13,6 +13,9 @@ struct Settings {
     double vertical_scale = 1.0;
     Method method = Method::Flat;
 
+    int map_width = 0;
+    int map_height = 0;
+
     // Waterlining
     double s = 30;
     double e = 0.75;
