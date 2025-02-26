@@ -39,6 +39,12 @@ uniform float thickness;
 // Stippling
 uniform float range;
 
+// Contour hatching 
+uniform int c_mult1;
+uniform int c_mult2;
+uniform float c_exponent;
+
+// Texture
 uniform sampler2D txt;
 
 const vec3 cameraPos = vec3(0.0);
@@ -71,7 +77,7 @@ float phi(float value) {
     return pow(floor(pow(space * value, exponent) + phase) - phase, 1.0 / exponent) / space;
 }
 
-vec3 water_flat() {
+vec3 waterFlat() {
     return waterColor;
 }
 
@@ -102,22 +108,48 @@ vec3 stippling(float u, float v) {
     return vec3(0);
 }
 
+// Defined in simplex.glsl
+float snoise(vec2 v);
+
+vec3 contourHatching(float u, float v) {
+/*
+    float w_rand = 0.1;
+
+    float value = get_dmap(u,v) + w_rand * snoise(vec2(u,v));
+    float phi2 = pow(floor(pow(space * value, exponent) + phase) - phase, 1.0 / exponent) / space;
+
+    //int r2 = int(round(snoise(c_mult2 * vec2(u, v))));
+
+    if (value - phi2 < thickness) {
+        return vec3(0, 0, 0);
+    }
+    return waterColor;
+*/
+    const float c_density = 0.9;
+
+    float d = get_dmap(u, v);
+    float d_i = 1-d;
+    float r1 = round(snoise(c_mult1 * vec2(d, 0.5)) / (1 -c_density));
+    float r2 = snoise(c_mult2 * pow(d_i, c_exponent) * vec2(u, v));
+
+    float calculated = pow(d_i, c_exponent) * r1 * r2;
+    //calculated = round(r2) * r1;
+    if (calculated < 0.5) {
+        return waterColor;
+    }
+    return vec3(0, 0, 0);
+}
+
 vec3 color_water(float u, float v) {
     switch (method) {
         case 0:
-            return water_flat();
+            return waterFlat();
         case 1:
             return waterlining(u, v);
         case 2:
             return stippling(u,v);
-    }
-
-
-    if (method == 1) {
-        return waterlining(u, v);
-    }
-    if (method == 2) {
-        return stippling(u, v);
+        case 3:
+            return contourHatching(u, v);
     }
 }
 

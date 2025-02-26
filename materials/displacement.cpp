@@ -202,6 +202,7 @@ void Displacement::init(QOPENGLFUNCTIONS *gl)
     program()->addShaderFromSourceFile(QOpenGLShader::TessellationControl, ":/materials/Displacement.tesc");
     program()->addShaderFromSourceFile(QOpenGLShader::TessellationEvaluation, ":/materials/Displacement.tese");
     program()->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/materials/Displacement.frag");
+    program()->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/materials/simplex.glsl");
     program()->link();
     if (!program()->isLinked())
     {
@@ -232,6 +233,9 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glUniform1f(gl->glGetUniformLocation(id, "vertical_scale"), settings->vertical_scale);
     gl->glUniform1i(gl->glGetUniformLocation(id, "method"), (int)settings->method);
 
+    gl->glUniform1i(gl->glGetUniformLocation(id, "c_mult1"), settings->c_mult1);
+    gl->glUniform1i(gl->glGetUniformLocation(id, "c_mult2"), settings->c_mult2);
+    gl->glUniform1f(gl->glGetUniformLocation(id, "c_exponent"), settings->c_exponent);
 
     if (!textureChanged){
         return;

@@ -28,7 +28,9 @@ private slots:
 
     void on_verticalScaleSpinBox_valueChanged(double value);
 
-
+    void on_cDistSpinBox_valueChanged(int value);
+    void on_cUVSpinBox_valueChanged(int value);
+    void on_cExponentSpinBox_valueChanged(double value);
 private:
     Ui::MainWindow *ui;
 };

@@ -10,6 +10,7 @@
         <file>materials/Displacement.tese</file>
         <file>materials/Displacement.tesc</file>
         <file>materials/Displacement.frag</file>
+        <file>materials/simplex.glsl</file>
         <file>resources/textures/fractal_noise.png</file>
     </qresource>
 </RCC>

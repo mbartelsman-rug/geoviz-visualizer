@@ -3,7 +3,7 @@
 #define SETTINGS_H
 
 enum class Method {
-    Flat, Waterlining, Stippling
+    Flat, Waterlining, Stippling, ContourHatching
 };
 
 struct Settings {
@@ -11,7 +11,7 @@ struct Settings {
 
     // General
     double vertical_scale = 1.0;
-    Method method = Method::Waterlining;
+    Method method = Method::Flat;
 
     // Waterlining
     double s = 30;
@@ -20,6 +20,12 @@ struct Settings {
     double h = 0.0;
 
     // Stippling
+
+
+    // Contour hatching
+    int c_mult1 = 50;
+    int c_mult2 = 50;
+    float c_exponent = 5;
 };
 
 #endif //SETTINGS_H

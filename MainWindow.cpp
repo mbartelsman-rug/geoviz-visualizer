@@ -64,3 +64,21 @@ void MainWindow::on_spinbox_h_valueChanged(double value)
     ui->viewport->updateModels();
 }
 
+
+void MainWindow::on_cDistSpinBox_valueChanged(int value)
+{
+    ui->viewport->settings.c_mult1 = value;
+    ui->viewport->updateModels();
+}
+
+void MainWindow::on_cUVSpinBox_valueChanged(int value)
+{
+    ui->viewport->settings.c_mult2 = value;
+    ui->viewport->updateModels();
+}
+
+void MainWindow::on_cExponentSpinBox_valueChanged(double value)
+{
+    ui->viewport->settings.c_exponent = value;
+    ui->viewport->updateModels();
+}
