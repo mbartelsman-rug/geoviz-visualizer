@@ -89,7 +89,7 @@
      <item row="9" column="0" colspan="2">
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="flat_tab">
         <attribute name="title">
@@ -196,6 +196,15 @@
         <attribute name="title">
          <string>Stippling</string>
         </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_14">
+           <property name="text">
+            <string>Stippling is not available</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="contour_tab">
         <attribute name="title">
