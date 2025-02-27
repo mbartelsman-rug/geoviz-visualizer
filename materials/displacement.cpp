@@ -227,6 +227,11 @@ void Displacement::update(QOPENGLFUNCTIONS *gl)
     gl->glUniform1f(gl->glGetUniformLocation(id, "ambientCoefficient"), ambientCoefficient);
     gl->glUniform1f(gl->glGetUniformLocation(id, "shininess"), shininess);
 
+    gl->glUniform3f(gl->glGetUniformLocation(id, "waterColor1"), settings->waterColor1.redF(), settings->waterColor1.greenF(), settings->waterColor1.blueF());
+    gl->glUniform3f(gl->glGetUniformLocation(id, "waterColor2"), settings->waterColor2.redF(), settings->waterColor2.greenF(), settings->waterColor2.blueF());
+    gl->glUniform3f(gl->glGetUniformLocation(id, "landColor1"), settings->landColor1.redF(), settings->landColor1.greenF(), settings->landColor1.blueF());
+    gl->glUniform3f(gl->glGetUniformLocation(id, "landColor2"), settings->landColor2.redF(), settings->landColor2.greenF(), settings->landColor2.blueF());
+
     gl->glUniform1f(gl->glGetUniformLocation(id, "vertical_scale"), settings->vertical_scale);
     gl->glUniform1i(gl->glGetUniformLocation(id, "method"), (int)settings->method);
     gl->glUniform2i(gl->glGetUniformLocation(id, "mapSize"), numX, numY);

@@ -31,6 +31,11 @@ uniform ivec2 mapSize;
 uniform int method;
 uniform float vertical_scale;
 
+uniform vec3 waterColor1;
+uniform vec3 waterColor2;
+uniform vec3 landColor1;
+uniform vec3 landColor2;
+
 // Waterlining
 uniform float space;
 uniform float exponent;
@@ -50,8 +55,6 @@ uniform float c_density;
 uniform sampler2D txt;
 
 const vec3 cameraPos = vec3(0.0);
-const vec3 waterColor = vec3(0.6, 0.6, 1);
-const vec3 waterLineColor = vec3(0, 0, 0.8);
 
 float get_terrain(float u, float v){
     return texture(txt, vec2(u/2,v)).r;
@@ -69,9 +72,7 @@ vec3 get_stipple(vec2 coords) {
 
 vec3 color_land(float value) {
     float max_value_color = 1000.0; // TODO make uniform
-
-    vec3 color = vec3(0, 0.3, 0);
-    color.g += min(value / max_value_color, 1.0) * (1 - color.g);
+    vec3 color = mix(landColor1, landColor2, min(value / max_value_color, 1.0));
     return color;
 }
 
@@ -80,7 +81,7 @@ float phi(float value) {
 }
 
 vec3 waterFlat() {
-    return waterColor;
+    return waterColor1;
 }
 
 vec3 waterlining(float u, float v) {
@@ -88,9 +89,9 @@ vec3 waterlining(float u, float v) {
 
     vec3 color;
     if (length - phi(length) < thickness) {
-        color = waterLineColor;
+        color = waterColor2;
     } else {
-        color = waterColor;
+        color = waterColor1;
     }
 
     return color;
@@ -114,26 +115,6 @@ vec3 stippling(float u, float v) {
         if (samp != vec3(0))
             return samp;
     }
-//
-//    vec2 randScale = vec2(0.037, 0.119);
-//    vec2 randomUV = cell * randScale;
-//    vec2 random = rand(randomUV);
-//
-//    vec3 samp = get_stipple(offset.xy - random.xy);
-//
-//    vec3 color = vec3(0);
-//    for (int i = -1; i <= 0; i++) {
-//        for (int j = -1; j <= 0; j++) {
-//            vec2 cell_t = cell + vec2(i, j);
-//            vec2 offset_t = offset - vec2(i, j);
-//            randomUV = cell_t.xy * randScale;
-//            random = rand(randomUV);
-//            samp = get_stipple(offset_t - random.xy);
-//            if (samp != vec3(0)) {
-//                color = samp;
-//            }
-//        }
-//    }
 
     return vec3(0);
 }
@@ -149,9 +130,9 @@ vec3 contourHatching(float u, float v) {
 
     float calculated = pow(d_i, c_exponent) * r1;
     if (calculated < 1 - c_density) {
-        return waterColor;
+        return waterColor1;
     }
-    return vec3(0, 0, 0);
+    return waterColor2;
 }
 
 vec3 color_water(float u, float v) {
@@ -161,7 +142,7 @@ vec3 color_water(float u, float v) {
         case 1:
             return waterlining(u, v);
         case 2:
-            return stippling(u,v);
+            return waterFlat();
         case 3:
             return contourHatching(u, v);
     }
@@ -171,14 +152,13 @@ void main() {
     float u = uv_fr.r;
     float v = uv_fr.g;
 
-    float value = get_terrain(u,v);
-    float height = value * vertical_scale;
+    float height = get_terrain(u,v);
 
     vec3 color;
     if (height == 0.0){
         color = color_water(u, v);
     } else {
-        color = color_land(value);
+        color = color_land(height);
     }
 
     color_out = vec4(color, 1);

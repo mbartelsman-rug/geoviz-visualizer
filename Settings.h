@@ -1,6 +1,7 @@
 
 #ifndef SETTINGS_H
 #define SETTINGS_H
+#include <qcolor.h>
 
 enum class Method {
     Flat, Waterlining, Stippling, ContourHatching
@@ -15,6 +16,11 @@ struct Settings {
 
     int map_width = 0;
     int map_height = 0;
+
+    QColor waterColor1 = QColor(140, 140, 255);
+    QColor waterColor2 = QColor(0, 0, 210);
+    QColor landColor1 = QColor(30, 100, 50);
+    QColor landColor2 = QColor(150, 205, 50);
 
     // Waterlining
     double s = 30;

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <qpushbutton.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -34,7 +35,15 @@ private slots:
     void on_cDensitySpinBox_valueChanged(double value);
 
     void on_saveImageButton_clicked();
+
+    void on_water1Btn_clicked();
+    void on_water2Btn_clicked();
+    void on_land1Btn_clicked();
+    void on_land2Btn_clicked();
+
 private:
     Ui::MainWindow *ui;
+    QColor colorBtnClicked(QPushButton *btn);
+    void setBtnColor(QPushButton *btn, QColor const &color);
 };
 #endif // MAINWINDOW_H
