@@ -1,3 +1,7 @@
+// Original author: Spatial (https://stackoverflow.com/users/2434130/spatial)
+// License: CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/)
+// Link: https://stackoverflow.com/a/17479300
+
 #version 460
 
 uint hash( uint x ) {
