@@ -175,6 +175,15 @@ void Viewport::keyPressEvent(QKeyEvent* event) {
         settings.wireFrameMode = !settings.wireFrameMode;
         update();
         break;
+
+    case 'R':
+        scene->camera->scale(1);
+        scene->camera->fov(40);
+        scene->camera->target(QVector3D(0, 0, 0));
+        scene->camera->eye(QVector3D(0.8, 0.8, 0.8));
+        scene->camera->referenceUp(QVector3D(0, 1, 0));
+        updateCamera();
+        break;
     }
 }
 
